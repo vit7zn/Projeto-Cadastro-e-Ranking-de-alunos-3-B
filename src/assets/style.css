@@ -1,0 +1,127 @@
+/* Configurações Gerais */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.main-container {
+    display: flex;
+    height: 100vh;
+    width: 100%;
+}
+
+/* Seção Branca (Esquerda) - Ajustada para centralizar o texto e subir a posição */
+.welcome-section {
+    width: 40%;
+    background-color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Centraliza verticalmente o conteúdo */
+    align-items: center;     /* Centraliza horizontalmente o conteúdo */
+    padding: 60px;
+    text-align: center;
+}
+
+.logo {
+    margin-bottom: 50px; /* Espaço entre a logo e o texto */
+}
+
+.welcome-text h1 {
+    font-size: 2.5rem;
+    color: #000;
+    margin-bottom: 10px; /* Aproxima o título do parágrafo */
+}
+
+.welcome-text p {
+    color: #555;
+    font-size: 1.1rem;
+    margin-bottom: 40px; 
+}
+
+/* Seção Verde (Direita) */
+.login-section {
+    width: 60%;
+    background-color: #1b8a00; /* Verde principal */
+    display: flex;
+    flex-direction: column;
+    justify-content: center; 
+    align-items: center;     
+    position: relative;
+}
+
+.login-form {
+    width: 100%;
+    max-width: 400px;
+}
+
+.input-group {
+    margin-bottom: 30px;
+    color: white;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: 500;
+}
+
+.input-wrapper {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.icon {
+    position: absolute;
+    left: -45px;
+    font-size: 2rem;
+}
+
+input {
+    width: 100%;
+    padding: 15px 25px;
+    border-radius: 30px; /* Estilo arredondado */
+    border: none;
+    outline: none;
+}
+
+.btn-entrar {
+    background-color: #e67e22; /* Cor laranja */
+    color: white;
+    border: none;
+    padding: 12px 60px;
+    border-radius: 25px;
+    font-weight: bold;
+    font-size: 1.1rem;
+    cursor: pointer;
+    display: block;
+    margin: 40px auto 0;
+    transition: background 0.3s;
+}
+
+.btn-entrar:hover {
+    background-color: #d35400;
+}
+
+/* Rodapé centralizado na parte inferior da seção verde */
+.footer-links {
+    position: absolute;
+    bottom: 20px;
+    color: white;
+    font-size: 0.85rem;
+    width: 100%;
+    text-align: center; /* Centraliza os links horizontalmente */
+}
+
+.footer-links a {
+    color: white;
+    text-decoration: none;
+    margin: 0 10px;
+}
+
+img {
+    display: block;
+    max-width: 200px;
+}
