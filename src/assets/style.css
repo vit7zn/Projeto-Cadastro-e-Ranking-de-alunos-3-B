@@ -125,3 +125,57 @@ img {
     display: block;
     max-width: 200px;
 }
+
+/* Estilo para o link de cadastro */
+.signup-link {
+    text-align: center;
+    margin-top: 20px;
+    color: white;
+}
+
+.signup-link a {
+    color: #e67e22; /* Mesmo laranja do botão */
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.signup-link a:hover {
+    text-decoration: underline;
+}
+
+/* Ajuste nos links do rodapé para não sumirem no hover */
+.footer-links a:hover {
+    text-decoration: underline;
+}
+
+
+/* Garante que o formulário tenha um espaçamento interno bom */
+.login-form {
+    width: 100%;
+    max-width: 400px;
+    padding: 20px; /* Adicionado para respiro em telas menores */
+}
+
+/* Estilo para o link de voltar ao login */
+.signup-link {
+    text-align: center;
+    margin-top: 20px;
+    color: white;
+}
+
+.signup-link a {
+    color: #e67e22; /* Laranja do botão */
+    text-decoration: none;
+    font-weight: bold;
+}
+
+/* Efeito básico de foco nos inputs para melhorar a experiência */
+input:focus {
+    border: 2px solid #e67e22;
+    background-color: #f9f9f9;
+}
+/* Classe para destacar erro no input via JS (opcional) */
+input.error {
+    border: 2px solid #ff4d4d;
+    background-color: #fff2f2;
+}
