@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro - EEEP Manoel Mano</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <main class="main-container">
+        <section class="welcome-section">
+            <div class="logo">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJgsXhRW5qdtpDbZWZmmPzg9njNJXOGcYLpQ&s" alt="Logo">
+            </div>
+            <div class="welcome-text">
+                <h1>Crie sua conta</h1>
+                <p>Preencha os dados abaixo para se cadastrar no sistema</p>
+            </div>
+        </section>
+
+        <section class="login-section">
+            <form class="login-form" action="cadastrar.php" method="POST">
+
+                <div class="input-group">
+                    <label>Nome Completo</label>
+                        <div class="input-wrapper">
+                            <span class="icon">👤</span>
+                            <input type="text" name="nome" placeholder="Digite seu nome" required>
+                        </div>
+                </div>    
+
+                
+                <div class="input-group">
+                    <label>E-mail Institucional</label>
+                    <div class="input-wrapper">
+                        <span class="icon">✉️</span>
+                        <input type="email" name="email" placeholder="exemplo@escola.com" required>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>Senha</label>
+                    <div class="input-wrapper">
+                        <span class="icon">🔑</span>
+                        <input type="password" name="senha" id="senha" placeholder="Crie uma senha" required>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>Confirmar Senha</label>
+                    <div class="input-wrapper">
+                        <span class="icon">✅</span>
+                        <input type="password" name="confirma_senha" id="confirma_senha" placeholder="Repita a senha" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-entrar">Criar Conta</button>
+                
+                <div class="signup-link">
+                    <p>Já tem uma conta? <a href="index.html">Faça login</a></p>
+                </div>
+            </form>
+
+            <footer class="footer-links">
+                <a href="privacidade.html">Política de privacidade</a> | <a href="termos.html">Termos de serviço</a>
+            </footer>
+        </section>
+    </main>
+
+</body>
+</html>
