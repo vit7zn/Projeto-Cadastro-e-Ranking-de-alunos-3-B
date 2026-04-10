@@ -3,69 +3,120 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastro - EEEP Manoel Mano</title>
+    <title>Cadastro de Estudante - EEEP Manoel Mano</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-    <main class="main-container">
-        <section class="welcome-section">
-            <div class="logo">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJgsXhRW5qdtpDbZWZmmPzg9njNJXOGcYLpQ&s" alt="Logo">
+    <header class="navbar">
+        <div class="user-info">
+            <img src="https://via.placeholder.com/40" alt="Avatar" class="avatar">
+            <div>
+                <span class="user-name" id="nome-perfil-nav">Carregando...</span>
+                <span class="user-role">Secretária</span>
             </div>
-            <div class="welcome-text">
-                <h1>Crie sua conta</h1>
-                <p>Preencha os dados abaixo para se cadastrar no sistema</p>
+            <div class="nav-icons">
+                <span>⚙️</span> <span>🔔</span> <span style="cursor:pointer" id="logout-btn">🚪</span>
             </div>
-        </section>
+        </div>
+        <nav class="menu">
+            <a href="#">Início</a>
+            <a href="#" class="active">Cadastro</a>
+            <a href="#">Dashboard</a>
+            <a href="#">Ranking</a>
+        </nav>
+    </header>
 
-        <section class="login-section">
-            <form class="login-form" action="cadastrar.php" method="POST">
+    <main class="registration-container">
+        <h1>Cadastro de estudante</h1>
+        
+        <div class="registration-content">
+            <form class="student-form">
+                <div class="form-row">
+                    <label>Nome completo do aluno</label>
+                    <input type="text" placeholder="Nome completo">
+                </div>
 
-                <div class="input-group">
-                    <label>Nome Completo</label>
-                        <div class="input-wrapper">
+                <div class="form-row">
+                    <label>Data de nascimento</label>
+                    <input type="text" placeholder="DD/MM/AAAA">
+                </div>
 
-                            <input type="text" name="nome" placeholder="Digite seu nome" required>
-                        </div>
-                </div>    
+                <div class="form-row">
+                    <label>CPF</label>
+                    <input type="text" placeholder="XX.XXX.XXX-X">
+                </div>
 
-                
-                <div class="input-group">
-                    <label>E-mail Institucional</label>
-                    <div class="input-wrapper">
-
-                        <input type="email" name="email" placeholder="exemplo@escola.com" required>
+                <div class="form-row-group">
+                    <div class="field">
+                        <label>Sexo</label>
+                        <select><option>Masculino</option><option>Feminino</option></select>
+                    </div>
+                    <div class="field">
+                        <label>Raça</label>
+                        <select><option>Pardo</option><option>Branco</option><option>Preto</option></select>
+                    </div>
+                    <div class="field">
+                        <label>País</label>
+                        <select><option>Brasil</option></select>
                     </div>
                 </div>
 
-                <div class="input-group">
-                    <label>Senha</label>
-                    <div class="input-wrapper">
+                <div class="form-row">
+                    <label>CEP</label>
+                    <input type="text" placeholder="00000-000">
+                </div>
 
-                        <input type="password" name="senha" id="senha" placeholder="Crie uma senha" required>
+                <div class="form-row-group">
+                    <div class="field">
+                        <label>Série</label>
+                        <select><option>1º</option><option>2º</option><option>3º</option></select>
+                    </div>
+                    <div class="field">
+                        <label>Curso</label>
+                        <select><option>Enfermagem</option><option>Informática</option><option>Administração</option></select>
                     </div>
                 </div>
 
-                <div class="input-group">
-                    <label>Confirmar Senha</label>
-                    <div class="input-wrapper">
-                        <input type="password" name="confirma_senha" id="confirma_senha" placeholder="Repita a senha" required>
-                    </div>
+                <div class="form-row">
+                    <label>Nome do responsável</label>
+                    <input type="text" placeholder="Nome completo">
                 </div>
 
-                <button type="submit" class="btn-entrar">Criar Conta</button>
-                
-                <div class="signup-link">
-                    <p>Já tem uma conta? <a href="index.html">Faça login</a></p>
+                <div class="grades-section">
+                    <h3>Notas</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Matéria</th>
+                                <th>Nota</th>
+                                <th>Semestre ▾</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Matemática</td><td>0.0</td><td>1º</td></tr>
+                            <tr><td>Português</td><td>0.0</td><td>1º</td></tr>
+                            <tr><td>Ciências</td><td>0.0</td><td>1º</td></tr>
+                        </tbody>
+                    </table>
                 </div>
+
+                <button type="submit" class="btn-save">➕ Cadastrar novo aluno</button>
             </form>
-
-            <footer class="footer-links">
-                <a href="privacidade.html">Política de privacidade</a> | <a href="termos.html">Termos de serviço</a>
-            </footer>
-        </section>
+        </div>
     </main>
+    
+    <script>
+        const nomeSalvo = localStorage.getItem('usuarioLogado');
+        if (nomeSalvo) {
+            document.getElementById('nome-perfil-nav').textContent = nomeSalvo;
+        } else {
+            window.location.href = "index.html"; 
+        }
 
+        document.getElementById('logout-btn').addEventListener('click', () => {
+            localStorage.removeItem('usuarioLogado');
+            window.location.href = "index.html";
+        });
+    </script>
 </body>
 </html>
