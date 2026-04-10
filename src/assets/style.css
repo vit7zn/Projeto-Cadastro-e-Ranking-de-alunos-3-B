@@ -6,44 +6,31 @@
     font-family: Arial, Helvetica, sans-serif;
 }
 
+/* TELA DE LOGIN */
 .main-container {
     display: flex;
     height: 100vh;
     width: 100%;
 }
 
-/* Seção Branca (Esquerda) - Ajustada para centralizar o texto e subir a posição */
 .welcome-section {
     width: 40%;
     background-color: #ffffff;
     display: flex;
     flex-direction: column;
-    justify-content: center; /* Centraliza verticalmente o conteúdo */
-    align-items: center;     /* Centraliza horizontalmente o conteúdo */
+    justify-content: center;
+    align-items: center;
     padding: 60px;
     text-align: center;
 }
 
-.logo {
-    margin-bottom: 50px; /* Espaço entre a logo e o texto */
-}
+.logo { margin-bottom: 50px; }
+.welcome-text h1 { font-size: 2.5rem; color: #000; margin-bottom: 10px; }
+.welcome-text p { color: #555; font-size: 1.1rem; margin-bottom: 40px; }
 
-.welcome-text h1 {
-    font-size: 2.5rem;
-    color: #000;
-    margin-bottom: 10px; /* Aproxima o título do parágrafo */
-}
-
-.welcome-text p {
-    color: #555;
-    font-size: 1.1rem;
-    margin-bottom: 40px; 
-}
-
-/* Seção Verde (Direita) */
 .login-section {
     width: 60%;
-    background-color: #1b8a00; /* Verde principal */
+    background-color: #1b8a00;
     display: flex;
     flex-direction: column;
     justify-content: center; 
@@ -51,44 +38,23 @@
     position: relative;
 }
 
-.login-form {
-    width: 100%;
-    max-width: 400px;
-}
+.login-form { width: 100%; max-width: 400px; }
+.input-group { margin-bottom: 30px; color: white; }
+.input-group label { display: block; margin-bottom: 10px; font-weight: 500; }
 
-.input-group {
-    margin-bottom: 30px;
-    color: white;
-}
+.input-wrapper { display: flex; align-items: center; position: relative; }
+.icon { position: absolute; left: -45px; font-size: 2rem; }
 
-.input-group label {
-    display: block;
-    margin-bottom: 10px;
-    font-weight: 500;
-}
-
-.input-wrapper {
-    display: flex;
-    align-items: center;
-    position: relative;
-}
-
-.icon {
-    position: absolute;
-    left: -45px;
-    font-size: 2rem;
-}
-
-input {
+.login-form input {
     width: 100%;
     padding: 15px 25px;
-    border-radius: 30px; /* Estilo arredondado */
+    border-radius: 30px;
     border: none;
     outline: none;
 }
 
 .btn-entrar {
-    background-color: #e67e22; /* Cor laranja */
+    background-color: #e67e22;
     color: white;
     border: none;
     padding: 12px 60px;
@@ -101,81 +67,91 @@ input {
     transition: background 0.3s;
 }
 
-.btn-entrar:hover {
-    background-color: #d35400;
+/* TELA DE CADASTRO */
+.navbar {
+    background-color: #1b8a00;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 50px;
+    align-items: center;
 }
 
-/* Rodapé centralizado na parte inferior da seção verde */
+.user-info { display: flex; align-items: center; gap: 10px; }
+.avatar { border-radius: 50%; border: 2px solid white; width: 40px; height: 40px; }
+.user-name { display: block; font-weight: bold; font-size: 0.9rem; }
+.user-role { font-size: 0.7rem; opacity: 0.8; }
+.nav-icons { display: flex; gap: 15px; margin-left: 15px; }
+
+.menu a {
+    color: white;
+    text-decoration: none;
+    padding: 10px 20px;
+    margin: 0 5px;
+}
+.menu a.active { background: white; color: #1b8a00; border-radius: 5px; }
+
+.registration-container { 
+    padding: 40px; 
+    max-width: 800px; 
+    margin: auto; 
+}
+
+.registration-container h1 { 
+    text-align: center; 
+    margin-bottom: 30px; 
+    color: #333;
+}
+
+.registration-content {
+    display: flex;
+    justify-content: center;
+}
+
+.student-form { width: 100%; }
+
+.form-row { margin-bottom: 15px; }
+.form-row label { display: block; font-weight: bold; font-size: 0.8rem; margin-bottom: 5px; color: #555; }
+
+.form-row input, .form-row-group select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+}
+
+.form-row-group { display: flex; gap: 15px; margin-bottom: 15px; }
+.field { flex: 1; }
+
+.grades-section { margin-top: 30px; }
+.grades-section h3 { margin-bottom: 10px; font-size: 1.1rem; color: #333; }
+
+table { width: 100%; border-collapse: collapse; background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+th { background: #f0f0f0; padding: 10px; font-size: 0.8rem; text-align: center; border: 1px solid #ddd; }
+td { border: 1px solid #ddd; padding: 10px; text-align: center; }
+
+.btn-save {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 30px;
+    font-weight: bold;
+    cursor: pointer;
+    display: block;
+    margin: 40px auto;
+    transition: transform 0.2s;
+}
+
+.btn-save:hover { transform: scale(1.05); }
+
 .footer-links {
     position: absolute;
     bottom: 20px;
     color: white;
     font-size: 0.85rem;
     width: 100%;
-    text-align: center; /* Centraliza os links horizontalmente */
-}
-
-.footer-links a {
-    color: white;
-    text-decoration: none;
-    margin: 0 10px;
-}
-
-img {
-    display: block;
-    max-width: 200px;
-}
-
-/* Estilo para o link de cadastro */
-.signup-link {
     text-align: center;
-    margin-top: 20px;
-    color: white;
 }
-
-.signup-link a {
-    color: #e67e22; /* Mesmo laranja do botão */
-    text-decoration: none;
-    font-weight: bold;
-}
-
-.signup-link a:hover {
-    text-decoration: underline;
-}
-
-/* Ajuste nos links do rodapé para não sumirem no hover */
-.footer-links a:hover {
-    text-decoration: underline;
-}
-
-
-/* Garante que o formulário tenha um espaçamento interno bom */
-.login-form {
-    width: 100%;
-    max-width: 400px;
-    padding: 20px; /* Adicionado para respiro em telas menores */
-}
-
-/* Estilo para o link de voltar ao login */
-.signup-link {
-    text-align: center;
-    margin-top: 20px;
-    color: white;
-}
-
-.signup-link a {
-    color: #e67e22; /* Laranja do botão */
-    text-decoration: none;
-    font-weight: bold;
-}
-
-/* Efeito básico de foco nos inputs para melhorar a experiência */
-input:focus {
-    border: 2px solid #e67e22;
-    background-color: #f9f9f9;
-}
-/* Classe para destacar erro no input via JS (opcional) */
-input.error {
-    border: 2px solid #ff4d4d;
-    background-color: #fff2f2;
-}
+.footer-links a { color: white; text-decoration: none; margin: 0 10px; }
