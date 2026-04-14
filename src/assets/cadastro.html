@@ -10,11 +10,11 @@
     <header class="navbar">
         <div class="user-info">
             <div>
-                <span class="user-name" id="nome-perfil-nav">Carregando...</span>
+                <span class="user-name" id="nome-perfil-nav">Usuário Logado</span>
                 <span class="user-role">Secretária</span>
             </div>
             <div class="nav-icons">
-                <span>⚙️</span> <span>🔔</span> <span style="cursor:pointer" id="logout-btn">🚪</span>
+                <span>⚙️</span> <span>🔔</span> <span style="cursor:pointer" id="logout-btn" onclick="window.location.href='index.html'">🚪</span>
             </div>
         </div>
         <nav class="menu">
@@ -29,44 +29,45 @@
         <h1>Cadastro de estudante</h1>
         
         <div class="registration-content">
-            <form class="student-form">
+            <form class="student-form" action="#" method="POST">
                 <div class="form-row">
                     <label>Nome completo do aluno</label>
-                    <input type="text" placeholder="Nome completo">
+                    <input type="text" name="nome_aluno" placeholder="Nome completo" required>
                 </div>
 
                 <div class="form-row">
                     <label>Data de nascimento</label>
-                    <input type="text" id="data-nascimento" placeholder="DD/MM/AAAA" maxlength="10">
+                    <input type="text" id="data-nascimento" name="data_nascimento" placeholder="DD/MM/AAAA" maxlength="10">
                 </div>
 
                 <div class="form-row-group">
                     <div class="field">
                         <label>Sexo</label>
-                        <select><option>Masculino</option><option>Feminino</option></select>
+                        <select name="sexo"><option>Masculino</option><option>Feminino</option></select>
                     </div>
                     <div class="field">
                         <label>Raça</label>
-                        <select><option>Pardo</option><option>Branco</option><option>Preto</option></select>
+                        <select name="raca"><option>Pardo</option><option>Branco</option><option>Preto</option></select>
                     </div>
                     <div class="field">
                         <label>País</label>
-                        <select><option>Brasil</option></select>
+                        <select name="pais"><option>Brasil</option></select>
                     </div>
                 </div>
                 <div class="form-row">
-    <label>CPF</label>
-    <input type="text" id="cpf" placeholder="000.000.000-00" maxlength="14">
-</div>
+                    <label>CPF</label>
+                    <input type="text" id="cpf" name="cpf" placeholder="000.000.000-00" maxlength="14">
+                </div>
 
-<div class="form-row">
-    <label>CEP</label>
-    <input type="text" id="cep" placeholder="00000-000" maxlength="9">
-</div>
+                <div class="form-row">
+                    <label>CEP</label>
+                    <input type="text" id="cep" name="cep" placeholder="00000-000" maxlength="9">
+                </div>
+
                 <div class="form-row-group">
                     <div class="field">
                         <label>Série</label>
-                        <select>
+                        <select name="serie">
                             <option>6º Ano</option>
                             <option>7º Ano</option>
                             <option>8º Ano</option>
@@ -75,7 +76,7 @@
                     </div>
                     <div class="field">
                         <label>Curso</label>
-                        <select>
+                        <select name="curso">
                             <option>Enfermagem</option>
                             <option>Informática</option>
                             <option>Administração</option>
@@ -86,66 +87,22 @@
 
                 <div class="form-row">
                     <label>Nome do responsável</label>
-                    <input type="text" placeholder="Nome completo">
+                    <input type="text" name="nome_responsavel" placeholder="Nome completo">
                 </div>
 
                 <div class="grades-section">
                     <h3>Notas</h3>
                     <table>
                         <thead>
-                            <tr>
-                                <th>Matéria</th>
-                                <th>Nota</th>
-                                <th>Semestre ▾</th>
-                            </tr>
+                            <tr><th>Matéria</th><th>Nota</th><th>Semestre ▾</th></tr>
                         </thead>
                         <tbody>
                             <tr>
                                 <td>Matemática</td>
-                                <td><input type="number" step="0.1" min="0" max="10" placeholder="0.0" style="width: 80px; text-align: center; padding: 5px; border: 1px solid #ccc; border-radius: 4px;"></td>
+                                <td><input type="number" name="nota_mat" step="0.1" min="0" max="10" placeholder="0.0" style="width: 80px; text-align: center; padding: 5px; border: 1px solid #ccc; border-radius: 4px;"></td>
                                 <td>1º</td>
                             </tr>
-                            <tr>
-                                <td>Português</td>
-                                <td><input type="number" step="0.1" min="0" max="10" placeholder="0.0" style="width: 80px; text-align: center; padding: 5px; border: 1px solid #ccc; border-radius: 4px;"></td>
-                                <td>1º</td>
-                            </tr>
-                            <tr>
-                                <td>Ciências</td>
-                                <td><input type="number" step="0.1" min="0" max="10" placeholder="0.0" style="width: 80px; text-align: center; padding: 5px; border: 1px solid #ccc; border-radius: 4px;"></td>
-                                <td>1º</td>
-                            </tr>
-                            <tr>
-                                <td>História</td>
-                                <td><input type="number" step="0.1" min="0" max="10" placeholder="0.0" style="width: 80px; text-align: center; padding: 5px; border: 1px solid #ccc; border-radius: 4px;"></td>
-                                <td>1º</td>
-                            </tr>
-                            <tr>
-                                <td>Geografia</td>
-                                <td><input type="number" step="0.1" min="0" max="10" placeholder="0.0" style="width: 80px; text-align: center; padding: 5px; border: 1px solid #ccc; border-radius: 4px;"></td>
-                                <td>1º</td>
-                            </tr>
-                            <tr>
-                                <td>Educação Física</td>
-                                <td><input type="number" step="0.1" min="0" max="10" placeholder="0.0" style="width: 80px; text-align: center; padding: 5px; border: 1px solid #ccc; border-radius: 4px;"></td>
-                                <td>1º</td>
-                            </tr>
-                            <tr>
-                                <td>Artes</td>
-                                <td><input type="number" step="0.1" min="0" max="10" placeholder="0.0" style="width: 80px; text-align: center; padding: 5px; border: 1px solid #ccc; border-radius: 4px;"></td>
-                                <td>1º</td>
-                            </tr>
-                            <tr>
-                                <td>Religião</td>
-                                <td><input type="number" step="0.1" min="0" max="10" placeholder="0.0" style="width: 80px; text-align: center; padding: 5px; border: 1px solid #ccc; border-radius: 4px;"></td>
-                                <td>1º</td>
-                            </tr>
-                            <tr>
-                                <td>Inglês</td>
-                                <td><input type="number" step="0.1" min="0" max="10" placeholder="0.0" style="width: 80px; text-align: center; padding: 5px; border: 1px solid #ccc; border-radius: 4px;"></td>
-                                <td>1º</td>
-                            </tr>
-                        </tbody>
+                            </tbody>
                     </table>
                 </div>
 
@@ -153,7 +110,6 @@
             </form>
         </div>
     </main>
-
     <script src="script.js"></script>
 </body>
 </html>
