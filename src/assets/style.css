@@ -130,3 +130,17 @@ td { border: 1px solid #ddd; padding: 10px; text-align: center; }
 }
 .footer-links a { color: white; text-decoration: none; margin: 0 10px; }
 .footer-links a:hover { text-decoration: underline; }
+
+/* No seu arquivo CSS */
+.input-nota {
+    width: 60px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    text-align: center;
+}
+
+.input-nota:focus {
+    border-color: #2e7d32; /* O verde do seu sistema */
+    outline: none;
+}

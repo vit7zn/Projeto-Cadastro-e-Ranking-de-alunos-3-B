@@ -45,14 +45,34 @@
                         <label>Sexo</label>
                         <select name="sexo"><option>Masculino</option><option>Feminino</option></select>
                     </div>
-                    <div class="field">
-                        <label>Raça</label>
-                        <select name="raca"><option>Pardo</option><option>Branco</option><option>Preto</option></select>
-                    </div>
-                    <div class="field">
-                        <label>País</label>
-                        <select name="pais"><option>Brasil</option></select>
-                    </div>
+                  <div class="form-row-group">
+                <div class="field">
+                    <label>Procedência Escolar</label>
+                    <select name="procedencia">
+                        <option value="publica">Escola Pública</option>
+                        <option value="privada">Escola Privada</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label>Cota Local?</label>
+                    <select name="cota_local" id="cota_local_select">
+                        <option value="nao">Não</option>
+                        <option value="sim">Sim (Cota de Local)</option>
+                    </select>
+                    <small style="color: #666; display: block; margin-top: 5px; font-size: 11px;">
+                        *Apenas para moradores do <strong>Bairro dos Venâncios</strong>.
+                    </small>
+                </div>
+
+                <div class="field">
+                    <label>PCD (Deficiente)</label>
+                    <select name="pcd">
+                        <option value="nao">Não</option>
+                        <option value="sim">Sim</option>
+                    </select>
+                </div>
+            </div>
                 </div>
                 <div class="form-row">
                     <label>CPF</label>
@@ -63,17 +83,13 @@
                     <label>CEP</label>
                     <input type="text" id="cep" name="cep" placeholder="00000-000" maxlength="9">
                 </div>
+                <div class="form-row">
+                    <label>Bairro</label>
+                    <input type="text" id="bairro" name="bairro" placeholder="Ex: Bairro dos Venâncios" required>
+                </div>
 
                 <div class="form-row-group">
-                    <div class="field">
-                        <label>Série</label>
-                        <select name="serie">
-                            <option>6º Ano</option>
-                            <option>7º Ano</option>
-                            <option>8º Ano</option>
-                            <option>9º Ano</option>
-                        </select>
-                    </div>
+                   
                     <div class="field">
                         <label>Curso</label>
                         <select name="curso">
@@ -91,19 +107,68 @@
                 </div>
 
                 <div class="grades-section">
-                    <h3>Notas</h3>
-                    <table>
-                        <thead>
-                            <tr><th>Matéria</th><th>Nota</th><th>Semestre ▾</th></tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Matemática</td>
-                                <td><input type="number" name="nota_mat" step="0.1" min="0" max="10" placeholder="0.0" style="width: 80px; text-align: center; padding: 5px; border: 1px solid #ccc; border-radius: 4px;"></td>
-                                <td>1º</td>
-                            </tr>
-                            </tbody>
-                    </table>
+                    <div class="container-notas" style="margin-top: 30px;">
+    <h3 style="color: #2e7d32; border-bottom: 2px solid #4caf50; padding-bottom: 10px;">Desempenho Acadêmico</h3>
+    
+    <div style="overflow-x: auto;">
+        <table style="width: 100%; border-collapse: collapse; margin-top: 15px; background: #fff;">
+            <thead>
+                <tr style="background-color: #f8f9fa; border-bottom: 2px solid #dee2e6;">
+                    <th style="padding: 12px; text-align: left;">Matéria</th>
+                    <th style="padding: 12px; text-align: center;">6º Ano</th>
+                    <th style="padding: 12px; text-align: center;">7º Ano</th>
+                    <th style="padding: 12px; text-align: center;">8º Ano</th>
+                    <th style="padding: 12px; text-align: center;">9º Ano</th>
+                </tr>
+            </thead>
+            <tbody>
+    <tr style="border-bottom: 1px solid #eee;">
+        <td style="padding: 12px; font-weight: bold;">Português</td>
+        <td><input type="number" name="port_6" step="0.1" min="0" max="10" class="input-nota" placeholder="0.0"></td>
+        <td><input type="number" name="port_7" step="0.1" min="0" max="10" class="input-nota" placeholder="0.0"></td>
+        <td><input type="number" name="port_8" step="0.1" min="0" max="10" class="input-nota" placeholder="0.0"></td>
+        <td><input type="number" name="port_9" step="0.1" min="0" max="10" class="input-nota" placeholder="0.0"></td>
+    </tr>
+    <tr style="border-bottom: 1px solid #eee;">
+        <td style="padding: 12px; font-weight: bold;">Matemática</td>
+        <td><input type="number" name="mat_6" step="0.1" min="0" max="10" class="input-nota" placeholder="0.0"></td>
+        <td><input type="number" name="mat_7" step="0.1" min="0" max="10" class="input-nota" placeholder="0.0"></td>
+        <td><input type="number" name="mat_8" step="0.1" min="0" max="10" class="input-nota" placeholder="0.0"></td>
+        <td><input type="number" name="mat_9" step="0.1" min="0" max="10" class="input-nota" placeholder="0.0"></td>
+    </tr>
+    <tr style="border-bottom: 1px solid #eee;">
+        <td style="padding: 12px; font-weight: bold;">Ciências</td>
+        <td><input type="number" name="cie_6" step="0.1" min="0" max="10" class="input-nota" placeholder="0.0"></td>
+        <td><input type="number" name="cie_7" step="0.1" min="0" max="10" class="input-nota" placeholder="0.0"></td>
+        <td><input type="number" name="cie_8" step="0.1" min="0" max="10" class="input-nota" placeholder="0.0"></td>
+        <td><input type="number" name="cie_9" step="0.1" min="0" max="10" class="input-nota" placeholder="0.0"></td>
+    </tr>
+    <tr style="border-bottom: 1px solid #eee;">
+        <td style="padding: 12px; font-weight: bold;">História</td>
+        <td><input type="number" name="his_6" step="0.1" min="0" max="10" class="input-nota" placeholder="0.0"></td>
+        <td><input type="number" name="his_7" step="0.1" min="0" max="10" class="input-nota" placeholder="0.0"></td>
+        <td><input type="number" name="his_8" step="0.1" min="0" max="10" class="input-nota" placeholder="0.0"></td>
+        <td><input type="number" name="his_9" step="0.1" min="0" max="10" class="input-nota" placeholder="0.0"></td>
+    </tr>
+    <tr style="border-bottom: 1px solid #eee;">
+        <td style="padding: 12px; font-weight: bold;">Geografia</td>
+        <td><input type="number" name="geo_6" step="0.1" min="0" max="10" class="input-nota" placeholder="0.0"></td>
+        <td><input type="number" name="geo_7" step="0.1" min="0" max="10" class="input-nota" placeholder="0.0"></td>
+        <td><input type="number" name="geo_8" step="0.1" min="0" max="10" class="input-nota" placeholder="0.0"></td>
+        <td><input type="number" name="geo_9" step="0.1" min="0" max="10" class="input-nota" placeholder="0.0"></td>
+    </tr>
+    <tr style="border-bottom: 1px solid #eee;">
+        <td style="padding: 12px; font-weight: bold;">Inglês</td>
+        <td><input type="number" name="ing_6" step="0.1" min="0" max="10" class="input-nota" placeholder="0.0"></td>
+        <td><input type="number" name="ing_7" step="0.1" min="0" max="10" class="input-nota" placeholder="0.0"></td>
+        <td><input type="number" name="ing_8" step="0.1" min="0" max="10" class="input-nota" placeholder="0.0"></td>
+        <td><input type="number" name="ing_9" step="0.1" min="0" max="10" class="input-nota" placeholder="0.0"></td>
+    </tr>
+</tbody>
+        </table>
+    </div>
+</div>
+
                 </div>
 
                 <button type="submit" class="btn-save">➕ Cadastrar novo aluno</button>
