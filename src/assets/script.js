@@ -43,3 +43,54 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+document.querySelector('.student-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    // Captura o bairro e as opções de cota
+    const bairroDigitado = document.getElementById('bairro').value.toLowerCase();
+    const selecionouCotaLocal = document.getElementsByName('cota_local')[0].value;
+    const procedencia = document.getElementsByName('procedencia')[0].value;
+    const ehPCD = document.getElementsByName('pcd')[0].value === 'sim';
+
+    // Regra de negócio: Cota Local só vale se morar no Bairro dos Venâncios
+    const temDireitoCotaLocal = (selecionouCotaLocal === 'sim' && bairroDigitado.includes('venancio'));
+
+    // Cálculo da Média
+    const camposNotas = document.querySelectorAll('.input-nota');
+    let somaTotal = 0;
+    let quantidadeNotas = 0;
+
+    camposNotas.forEach(input => {
+        if (input.value !== "") {
+            somaTotal += parseFloat(input.value);
+            quantidadeNotas++;
+        }
+    });
+
+    const mediaFinal = quantidadeNotas > 0 ? (somaTotal / quantidadeNotas).toFixed(2) : 0;
+
+    // DEFINIÇÃO DA CATEGORIA PARA O RANKING
+    let categoriaRanking = "";
+
+    if (ehPCD) {
+        categoriaRanking = "Cota PCD";
+    } else if (procedencia === 'privada' && temDireitoCotaLocal) {
+        categoriaRanking = "Privada - Cota Local (Venâncios)";
+    } else if (procedencia === 'privada') {
+        categoriaRanking = "Privada - Ampla Concorrência";
+    } else {
+        categoriaRanking = "Escola Pública";
+    }
+
+    // Objeto Final guardado na variável
+    const fichaAluno = {
+        nome: document.getElementsByName('nome_aluno')[0].value,
+        media: parseFloat(mediaFinal),
+        categoria: categoriaRanking,
+        bairro: bairroDigitado
+    };
+
+    console.log("Variável pronta para o Banco/Ranking:", fichaAluno);
+    alert(`Aluno cadastrado na categoria: ${categoriaRanking}\nMédia Final: ${mediaFinal}`);
+});
