@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Ranking Oficial - EEEP</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .filtro-curso { padding: 20px; text-align: center; background: #f4f4f4; }
+        .grid-ranking { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding: 20px; }
+        .cota-tag { font-size: 0.7em; padding: 2px 8px; border-radius: 10px; margin-left: 10px; }
+        .tag-pub { background: #e3f2fd; color: #1976d2; }
+        .tag-priv { background: #f3e5f5; color: #7b1fa2; }
+        .tag-pcd { background: #fff3e0; color: #f57c00; }
+        .vagas-info { font-weight: bold; color: #2e7d32; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+
+    <section class="filtro-curso">
+        <label>Selecione o Curso:</label>
+        <select id="selectCurso">
+            <option value="informatica">Informática</option>
+            <option value="enfermagem">Enfermagem</option>
+            <option value="administracao">Administração</option>
+        </select>
+    </section>
+
+    <main class="grid-ranking">
+        <section class="ranking-column">
+            <div class="column-header header-green">
+                <h2>Classificados (Top 45)</h2>
+            </div>
+            <div class="cards-list">
+                <div class="ranking-card">
+                    <span class="position">1º</span>
+                    <div class="info">
+                        <span class="name">Vitor Emanuel</span>
+                        <span class="cota-tag tag-pub">Pública</span>
+                    </div>
+                    <span class="score score-green">9.85</span>
+                </div>
+                </div>
+        </section>
+
+        <section class="ranking-column">
+            <div class="column-header header-red">
+                <h2>Lista de Espera</h2>
+            </div>
+            <div class="cards-list">
+                <div class="ranking-card">
+                    <span class="position">46º</span>
+                    <div class="info">
+                        <span class="name">Carlos Oliveira</span>
+                        <span class="cota-tag tag-priv">Privada</span>
+                    </div>
+                    <span class="score score-red">8.20</span>
+                </div>
+            </div>
+        </section>
+    </main>
+
+</body>
+</html>
