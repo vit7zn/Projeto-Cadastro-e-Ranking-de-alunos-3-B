@@ -7,23 +7,32 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    
     <header class="navbar">
         <div class="user-info">
             <div>
                 <span class="user-name" id="nome-perfil-nav">Usuário Logado</span>
-                <span class="user-role">Secretária</span>
-            </div>
-            <div class="nav-icons">
-                <span>⚙️</span> <span>🔔</span> <span style="cursor:pointer" id="logout-btn" onclick="window.location.href='index.html'">🚪</span>
+                <span class="user-role">Administração</span>
             </div>
         </div>
-        <nav class="menu">
-            <a href="#">Início</a>
-            <a href="#" class="active">Cadastro</a>
-            <a href="#">Dashboard</a>
-            <a href="ranking.php">Ranking</a>
-        </nav>
+        
+        <button id="btn-menu-hamburguer">
+    <span></span>
+    <span></span>
+    <span></span>
+</button>
+
+<div id="overlay-menu"></div>
+
+    <nav id="sidebar-lateral">
+        <a href="index.HTML">Início</a>
+        <a href="cadastro.html">Cadastro</a>
+        <a href="#">Dashboard</a>
+        <a href="telaRanking.html">Ranking</a>
+    </nav>
+
     </header>
+
 
     <main class="registration-container">
         <h1>Cadastro de estudante</h1>
