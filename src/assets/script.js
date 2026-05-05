@@ -94,3 +94,20 @@ document.querySelector('.student-form').addEventListener('submit', function(e) {
     console.log("Variável pronta para o Banco/Ranking:", fichaAluno);
     alert(`Aluno cadastrado na categoria: ${categoriaRanking}\nMédia Final: ${mediaFinal}`);
 });
+document.addEventListener('DOMContentLoaded', function() {
+    const btnMenu = document.getElementById('btn-menu-hamburguer');
+    const sidebar = document.getElementById('sidebar-lateral');
+    const overlay = document.getElementById('overlay-menu');
+
+    if(btnMenu && sidebar && overlay) {
+        btnMenu.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+        });
+
+        overlay.addEventListener('click', () => {
+            sidebar.classList.remove('active');
+            overlay.classList.remove('active');
+        });
+    }
+});
