@@ -99,15 +99,42 @@ document.addEventListener('DOMContentLoaded', function() {
     const sidebar = document.getElementById('sidebar-lateral');
     const overlay = document.getElementById('overlay-menu');
 
-    if(btnMenu && sidebar && overlay) {
+    if (btnMenu && sidebar && overlay) {
+
+        // Abre/fecha o menu lateral
         btnMenu.addEventListener('click', () => {
-            sidebar.classList.toggle('active');
-            overlay.classList.toggle('active');
+            const isOpen = sidebar.classList.toggle('active');
+            overlay.classList.toggle('active', isOpen);
+            btnMenu.classList.toggle('open', isOpen);
+            btnMenu.setAttribute('aria-expanded', isOpen);
         });
 
+        // Fecha ao clicar no overlay
         overlay.addEventListener('click', () => {
             sidebar.classList.remove('active');
             overlay.classList.remove('active');
+            btnMenu.classList.remove('open');
+            btnMenu.setAttribute('aria-expanded', false);
+        });
+
+        // Fecha ao pressionar ESC
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && sidebar.classList.contains('active')) {
+                sidebar.classList.remove('active');
+                overlay.classList.remove('active');
+                btnMenu.classList.remove('open');
+                btnMenu.setAttribute('aria-expanded', false);
+            }
+        });
+
+        // Marca o link ativo com base na página atual
+        const paginaAtual = window.location.pathname.split('/').pop().toLowerCase();
+        const links = sidebar.querySelectorAll('a');
+        links.forEach(link => {
+            const href = link.getAttribute('href').toLowerCase();
+            if (href === paginaAtual || (paginaAtual === '' && href === 'index.html')) {
+                link.classList.add('active-link');
+            }
         });
     }
 });
