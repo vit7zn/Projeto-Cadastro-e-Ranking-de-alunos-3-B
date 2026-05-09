@@ -8,28 +8,11 @@
 </head>
 <body>
 
-    <!-- OVERLAY -->
-    <div id="overlay-menu"></div>
-
-    <!-- SIDEBAR LATERAL -->
-    <nav id="sidebar-lateral">
-        <a href="dashboard.php">📊 Painel</a>
-        <a href="cadastro.html" class="active-link">📋 Cadastro</a>
-        <a href="ranking.php">🏆 Ranking</a>
-        <a href="index.HTML">🚪 Sair</a>
-        <div class="sidebar-footer">EEEP Manoel Mano © 2026</div>
-    </nav>
-
     <header class="navbar">
-        <div class="navbar-left">
-            <button class="btn-hamburguer" id="btn-hamburguer" aria-label="Menu">
-                <span></span><span></span><span></span>
-            </button>
-            <a class="navbar-brand" href="index.HTML">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJgsXhRW5qdtpDbZWZmmPzg9njNJXOGcYLpQ&s" alt="Logo">
-                EEEP Manoel Mano
-            </a>
-        </div>
+        <a class="navbar-brand" href="index.HTML">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJgsXhRW5qdtpDbZWZmmPzg9njNJXOGcYLpQ&s" alt="Logo">
+            EEEP Manoel Mano
+        </a>
         <nav class="navbar-menu">
             <a href="dashboard.php">Painel</a>
             <a href="cadastro.html" class="active">Cadastro</a>
@@ -44,13 +27,6 @@
         </div>
     </header>
 
-    <script>
-    fetch('get_session.php')
-        .then(r => r.json())
-        .then(data => { if (data.nome) document.getElementById('nome-perfil-nav').textContent = data.nome; })
-        .catch(() => {});
-    </script>
-
     <main class="registration-container">
         <h1>📋 Cadastro de Estudante</h1>
 
@@ -62,20 +38,9 @@
             <div class="form-section">
                 <div class="form-section-title">👤 Dados do Candidato</div>
 
-                <div class="form-row-group">
-                    <div class="field" style="flex:2;">
-                        <label>Nome completo do aluno</label>
-                        <input type="text" name="nome_aluno" placeholder="Nome completo" required>
-                    </div>
-                    <div class="field" style="flex:1;">
-                        <label>Sexo</label>
-                        <select name="sexo" id="sexo" required>
-                            <option value="">Selecione...</option>
-                            <option value="Masculino">Masculino</option>
-                            <option value="Feminino">Feminino</option>
-                            <option value="Outro">Outro</option>
-                        </select>
-                    </div>
+                <div class="form-row">
+                    <label>Nome completo do aluno</label>
+                    <input type="text" name="nome_aluno" placeholder="Nome completo" required>
                 </div>
 
                 <div class="form-row-group">
@@ -117,6 +82,42 @@
                         <option value="nao">Não</option>
                         <option value="sim">Sim</option>
                     </select>
+                </div>
+            </div>
+
+            <!-- CONTATO DO RESPONSÁVEL -->
+            <div class="form-section">
+                <div class="form-section-title">📱 Contato do Responsável
+                    <span style="margin-left:auto; font-size:.75rem; font-weight:400; color:#6b7280; background:#e8f5e9; padding:4px 12px; border-radius:20px;">
+                        📲 Resultado enviado via WhatsApp automaticamente
+                    </span>
+                </div>
+
+                <div class="form-row">
+                    <label>Nome do responsável</label>
+                    <input type="text" name="nome_responsavel" placeholder="Nome completo do pai/mãe ou responsável" required>
+                </div>
+
+                <div class="form-row-group">
+                    <div class="field">
+                        <label>WhatsApp do responsável</label>
+                        <input
+                            type="tel"
+                            name="telefone_responsavel"
+                            id="telefone_responsavel"
+                            placeholder="(88) 9 9999-9999"
+                            maxlength="16"
+                            required
+                            oninput="mascararTelefone(this)"
+                        >
+                        <span style="font-size:.75rem; color:#6b7280; margin-top:5px; display:block;">
+                            ⚠️ Certifique-se que o número tem WhatsApp ativo.
+                        </span>
+                    </div>
+                    <div class="field">
+                        <label>E-mail do responsável <span style="font-weight:400; text-transform:none;">(opcional)</span></label>
+                        <input type="email" name="email_responsavel" placeholder="email@exemplo.com">
+                    </div>
                 </div>
             </div>
 
@@ -294,6 +295,15 @@
         }
     }
 
+    // Máscara de telefone: (88) 9 9999-9999
+    window.mascararTelefone = function(input) {
+        let v = input.value.replace(/\D/g, '').substring(0, 11);
+        if (v.length <= 2)       input.value = v.length ? '(' + v : v;
+        else if (v.length <= 3)  input.value = '(' + v.substring(0,2) + ') ' + v.substring(2);
+        else if (v.length <= 7)  input.value = '(' + v.substring(0,2) + ') ' + v.substring(2,3) + ' ' + v.substring(3);
+        else                     input.value = '(' + v.substring(0,2) + ') ' + v.substring(2,3) + ' ' + v.substring(3,7) + '-' + v.substring(7);
+    };
+
     // Escuta mudanças em todos os inputs de nota
     document.querySelectorAll('.input-nota').forEach(inp => {
         inp.addEventListener('input', atualizarMedia);
@@ -405,16 +415,7 @@
                     body: JSON.stringify({ imagem: imgBase64, tipo: imgTipo })
                 });
                 const json = await resp.json();
-                if (json.erro) {
-                    // Se for erro de cota, mostra countdown e retry automático
-                    if (resp.status === 429 || json.erro.includes('Limite') || json.erro.includes('quota')) {
-                        mostrarErroComRetry(json.erro, 10);
-                    } else {
-                        mostrarErro('⚠️ ' + json.erro);
-                        btnAnali.disabled = false;
-                    }
-                    return;
-                }
+                if (json.erro) { mostrarErro('⚠️ ' + json.erro); btnAnali.disabled = false; return; }
                 notasOCR = (json.notas || []).map(n => parseFloat(n)).filter(n => !isNaN(n) && n >= 0 && n <= 10);
                 if (notasOCR.length === 0) { mostrarErro('⚠️ Nenhuma nota legível encontrada. Verifique a imagem e tente novamente.'); btnAnali.disabled = false; return; }
                 renderizarChips(notasOCR, json.obs);
@@ -426,22 +427,6 @@
                 mostrarErro('❌ Erro ao analisar. (' + err.message + ')');
                 btnAnali.disabled = false;
             }
-        }
-
-        // Mostra erro com contagem regressiva e retry automático
-        function mostrarErroComRetry(msg, segundos) {
-            let restante = segundos;
-            mostrarErro(`⏳ ${msg} Tentando novamente em ${restante}s…`);
-            const intervalo = setInterval(() => {
-                restante--;
-                if (restante <= 0) {
-                    clearInterval(intervalo);
-                    statusMsg.textContent = '🔄 Tentando novamente…';
-                    analisar();
-                } else {
-                    statusMsg.textContent = `⏳ Limite de requisições atingido. Tentando novamente em ${restante}s…`;
-                }
-            }, 1000);
         }
 
         function renderizarChips(notas, obs) {
@@ -493,20 +478,6 @@
             statusBox.style.cssText = 'display:flex; align-items:center; gap:12px; background:#fff5f5; border-left:4px solid #e53935; border-radius:10px; padding:13px 16px; margin-top:14px; font-size:.88rem; color:#c62828;';
             statusBox.style.display = 'flex';
         }
-    })();
-    </script>
-
-    <script>
-    // Hamburguer sidebar
-    (function(){
-        const btn = document.getElementById('btn-hamburguer');
-        const sidebar = document.getElementById('sidebar-lateral');
-        const overlay = document.getElementById('overlay-menu');
-        if (!btn) return;
-        function abrir(){ btn.classList.add('aberto'); sidebar.classList.add('aberta'); overlay.classList.add('aberto'); }
-        function fechar(){ btn.classList.remove('aberto'); sidebar.classList.remove('aberta'); overlay.classList.remove('aberto'); }
-        btn.addEventListener('click', () => sidebar.classList.contains('aberta') ? fechar() : abrir());
-        overlay.addEventListener('click', fechar);
     })();
     </script>
 
