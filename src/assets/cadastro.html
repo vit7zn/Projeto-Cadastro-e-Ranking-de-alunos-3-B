@@ -7,82 +7,112 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    
+
+    <!-- OVERLAY -->
+    <div id="overlay-menu"></div>
+
+    <!-- SIDEBAR LATERAL -->
+    <nav id="sidebar-lateral">
+        <a href="dashboard.php">📊 Painel</a>
+        <a href="cadastro.html" class="active-link">📋 Cadastro</a>
+        <a href="ranking.php">🏆 Ranking</a>
+        <a href="index.HTML">🚪 Sair</a>
+        <div class="sidebar-footer">EEEP Manoel Mano © 2026</div>
+    </nav>
+
     <header class="navbar">
-        <div class="user-info">
-            <div>
-<<<<<<< HEAD
-                <span class="user-name">Usuário Logado</span>
-                <span class="user-role">Secretária</span>
-            </div>
+        <div class="navbar-left">
+            <button class="btn-hamburguer" id="btn-hamburguer" aria-label="Menu">
+                <span></span><span></span><span></span>
+            </button>
+            <a class="navbar-brand" href="index.HTML">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJgsXhRW5qdtpDbZWZmmPzg9njNJXOGcYLpQ&s" alt="Logo">
+                EEEP Manoel Mano
+            </a>
         </div>
-        <nav class="menu">
-            <a href="index.html">Início</a>
+        <nav class="navbar-menu">
+            <a href="dashboard.php">Painel</a>
             <a href="cadastro.html" class="active">Cadastro</a>
             <a href="ranking.php">Ranking</a>
         </nav>
-=======
-                <span class="user-name" id="nome-perfil-nav">Usuário Logado</span>
+        <div class="navbar-right">
+            <div class="user-block">
+                <span class="user-name" id="nome-perfil-nav">Usuário</span>
                 <span class="user-role">Administração</span>
             </div>
+            <a href="index.HTML" class="btn-sair">Sair</a>
         </div>
-        
-        <button id="btn-menu-hamburguer" aria-label="Abrir menu" aria-expanded="false">
-            <span></span>
-            <span></span>
-            <span></span>
-        </button>
-
->>>>>>> 5ad12f0179e6cc54cf60c8698ac7edc0551d024e
     </header>
 
-    <div id="overlay-menu"></div>
-
-    <nav id="sidebar-lateral">
-        <a href="index.HTML">Início</a>
-        <a href="cadastro.html">Cadastro</a>
-        <a href="#">Dashboard</a>
-        <a href="telaRanking.html">Ranking</a>
-        <span class="sidebar-footer">EEEP Manoel Mano © 2026</span>
-    </nav>
-
+    <script>
+    fetch('get_session.php')
+        .then(r => r.json())
+        .then(data => { if (data.nome) document.getElementById('nome-perfil-nav').textContent = data.nome; })
+        .catch(() => {});
+    </script>
 
     <main class="registration-container">
-        <h1>Cadastro de estudante</h1>
-        
-        <form class="student-form" action="salvar_cadastro.php" method="POST" enctype="multipart/form-data">
-            <input type="hidden" name="media_final" id="media_final" value="0.00">
+        <h1>📋 Cadastro de Estudante</h1>
+
+        <form class="student-form" action="salvar_cadastro.php" method="POST">
+            <input type="hidden" name="media_final"       id="media_final"       value="0.00000">
             <input type="hidden" name="categoria_ranking" id="categoria_ranking" value="">
 
-            <div class="form-row">
-                <label>Nome completo do aluno</label>
-                <input type="text" name="nome_aluno" placeholder="Nome completo" required>
-            </div>
+            <!-- DADOS PESSOAIS -->
+            <div class="form-section">
+                <div class="form-section-title">👤 Dados do Candidato</div>
 
-            <div class="form-row-group">
-                <div class="field">
-                    <label>Bairro</label>
-                    <input type="text" name="bairro" id="bairro" placeholder="Ex: Venâncios" required>
+                <div class="form-row-group">
+                    <div class="field" style="flex:2;">
+                        <label>Nome completo do aluno</label>
+                        <input type="text" name="nome_aluno" placeholder="Nome completo" required>
+                    </div>
+                    <div class="field" style="flex:1;">
+                        <label>Sexo</label>
+                        <select name="sexo" id="sexo" required>
+                            <option value="">Selecione...</option>
+                            <option value="Masculino">Masculino</option>
+                            <option value="Feminino">Feminino</option>
+                            <option value="Outro">Outro</option>
+                        </select>
+                    </div>
                 </div>
-                <div class="field">
-                    <label>Deseja concorrer à Cota Local?</label>
-                    <select name="optou_cota_local" id="optou_cota_local">
-                        <option value="nao">Não</option>
-                        <option value="sim">Sim (Bairro dos Venâncios)</option>
-                    </select>
-                </div>
-            </div>
 
-            <div class="form-row-group">
-                <div class="field">
-                    <label>Procedência Escolar</label>
-                    <select name="procedencia" id="procedencia">
-                        <option value="publica">Escola Pública</option>
-                        <option value="privada">Escola Privada</option>
-                    </select>
+                <div class="form-row-group">
+                    <div class="field">
+                        <label>Bairro</label>
+                        <input type="text" name="bairro" id="bairro" placeholder="Ex: Venâncios" required>
+                    </div>
+                    <div class="field">
+                        <label>Deseja concorrer à Cota Local?</label>
+                        <select name="optou_cota_local" id="optou_cota_local">
+                            <option value="nao">Não</option>
+                            <option value="sim">Sim (Bairro dos Venâncios)</option>
+                        </select>
+                    </div>
                 </div>
-                <div class="field">
-                    <label>Cota PCD?</label>
+
+                <div class="form-row-group">
+                    <div class="field">
+                        <label>Curso pretendido</label>
+                        <select name="curso" id="curso">
+                            <option value="Enfermagem">Enfermagem</option>
+                            <option value="Informatica">Informática</option>
+                            <option value="Administracao">Administração</option>
+                            <option value="Desenvolvimento de Sistemas">Desenvolvimento de Sistemas</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label>Procedência Escolar</label>
+                        <select name="procedencia" id="procedencia">
+                            <option value="publica">Escola Pública</option>
+                            <option value="privada">Escola Privada</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row" style="max-width: 320px;">
+                    <label>Cota PCD (Pessoa com Deficiência)?</label>
                     <select name="pcd" id="pcd">
                         <option value="nao">Não</option>
                         <option value="sim">Sim</option>
@@ -90,39 +120,395 @@
                 </div>
             </div>
 
-            <div class="form-row" style="background: #e8f5e9; padding: 15px; border: 1px dashed #28a745; border-radius: 8px;">
-                <label style="color: #1b8a00; font-weight: bold;">📄 Importar Boletim PDF (Opcional)</label>
-                <input type="file" name="boletim_pdf" accept="application/pdf">
+            <!-- NOTAS DO BOLETIM -->
+            <div class="form-section">
+                <div class="grades-section-header">
+                    <div class="form-section-title" style="margin-bottom:0; border:none; padding:0;">
+                        📚 Notas do Boletim Escolar
+                    </div>
+                    <button type="button" id="btn-abrir-ocr" class="btn-ocr">
+                        📷 Preencher via OCR (IA)
+                    </button>
+                </div>
+                <p style="font-size:.8rem; color:var(--text-muted); margin-bottom:16px;">
+                    Preencha as notas de cada disciplina por ano letivo (6º ao 9º ano). Use o botão OCR para preencher automaticamente com foto do boletim.
+                </p>
+
+                <div style="overflow-x:auto;">
+                    <table class="notas-grid-table" id="tabela-notas">
+                        <thead>
+                            <tr>
+                                <th>Disciplina</th>
+                                <th>6º Ano</th>
+                                <th>7º Ano</th>
+                                <th>8º Ano</th>
+                                <th>9º Ano</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Português</td>
+                                <td><input type="number" step="0.01" min="0" max="10" class="input-nota" name="nota[portugues][6]" placeholder="—"></td>
+                                <td><input type="number" step="0.01" min="0" max="10" class="input-nota" name="nota[portugues][7]" placeholder="—"></td>
+                                <td><input type="number" step="0.01" min="0" max="10" class="input-nota" name="nota[portugues][8]" placeholder="—"></td>
+                                <td><input type="number" step="0.01" min="0" max="10" class="input-nota" name="nota[portugues][9]" placeholder="—"></td>
+                            </tr>
+                            <tr>
+                                <td>Matemática</td>
+                                <td><input type="number" step="0.01" min="0" max="10" class="input-nota" name="nota[matematica][6]" placeholder="—"></td>
+                                <td><input type="number" step="0.01" min="0" max="10" class="input-nota" name="nota[matematica][7]" placeholder="—"></td>
+                                <td><input type="number" step="0.01" min="0" max="10" class="input-nota" name="nota[matematica][8]" placeholder="—"></td>
+                                <td><input type="number" step="0.01" min="0" max="10" class="input-nota" name="nota[matematica][9]" placeholder="—"></td>
+                            </tr>
+                            <tr>
+                                <td>Ciências / Biologia</td>
+                                <td><input type="number" step="0.01" min="0" max="10" class="input-nota" name="nota[ciencias][6]" placeholder="—"></td>
+                                <td><input type="number" step="0.01" min="0" max="10" class="input-nota" name="nota[ciencias][7]" placeholder="—"></td>
+                                <td><input type="number" step="0.01" min="0" max="10" class="input-nota" name="nota[ciencias][8]" placeholder="—"></td>
+                                <td><input type="number" step="0.01" min="0" max="10" class="input-nota" name="nota[ciencias][9]" placeholder="—"></td>
+                            </tr>
+                            <tr>
+                                <td>História</td>
+                                <td><input type="number" step="0.01" min="0" max="10" class="input-nota" name="nota[historia][6]" placeholder="—"></td>
+                                <td><input type="number" step="0.01" min="0" max="10" class="input-nota" name="nota[historia][7]" placeholder="—"></td>
+                                <td><input type="number" step="0.01" min="0" max="10" class="input-nota" name="nota[historia][8]" placeholder="—"></td>
+                                <td><input type="number" step="0.01" min="0" max="10" class="input-nota" name="nota[historia][9]" placeholder="—"></td>
+                            </tr>
+                            <tr>
+                                <td>Geografia</td>
+                                <td><input type="number" step="0.01" min="0" max="10" class="input-nota" name="nota[geografia][6]" placeholder="—"></td>
+                                <td><input type="number" step="0.01" min="0" max="10" class="input-nota" name="nota[geografia][7]" placeholder="—"></td>
+                                <td><input type="number" step="0.01" min="0" max="10" class="input-nota" name="nota[geografia][8]" placeholder="—"></td>
+                                <td><input type="number" step="0.01" min="0" max="10" class="input-nota" name="nota[geografia][9]" placeholder="—"></td>
+                            </tr>
+                            <tr>
+                                <td>Física</td>
+                                <td><input type="number" step="0.01" min="0" max="10" class="input-nota" name="nota[fisica][6]" placeholder="—"></td>
+                                <td><input type="number" step="0.01" min="0" max="10" class="input-nota" name="nota[fisica][7]" placeholder="—"></td>
+                                <td><input type="number" step="0.01" min="0" max="10" class="input-nota" name="nota[fisica][8]" placeholder="—"></td>
+                                <td><input type="number" step="0.01" min="0" max="10" class="input-nota" name="nota[fisica][9]" placeholder="—"></td>
+                            </tr>
+                            <tr>
+                                <td>Química</td>
+                                <td><input type="number" step="0.01" min="0" max="10" class="input-nota" name="nota[quimica][6]" placeholder="—"></td>
+                                <td><input type="number" step="0.01" min="0" max="10" class="input-nota" name="nota[quimica][7]" placeholder="—"></td>
+                                <td><input type="number" step="0.01" min="0" max="10" class="input-nota" name="nota[quimica][8]" placeholder="—"></td>
+                                <td><input type="number" step="0.01" min="0" max="10" class="input-nota" name="nota[quimica][9]" placeholder="—"></td>
+                            </tr>
+                            <tr>
+                                <td>Inglês</td>
+                                <td><input type="number" step="0.01" min="0" max="10" class="input-nota" name="nota[ingles][6]" placeholder="—"></td>
+                                <td><input type="number" step="0.01" min="0" max="10" class="input-nota" name="nota[ingles][7]" placeholder="—"></td>
+                                <td><input type="number" step="0.01" min="0" max="10" class="input-nota" name="nota[ingles][8]" placeholder="—"></td>
+                                <td><input type="number" step="0.01" min="0" max="10" class="input-nota" name="nota[ingles][9]" placeholder="—"></td>
+                            </tr>
+                            <tr>
+                                <td>Artes / Ed. Física</td>
+                                <td><input type="number" step="0.01" min="0" max="10" class="input-nota" name="nota[artes][6]" placeholder="—"></td>
+                                <td><input type="number" step="0.01" min="0" max="10" class="input-nota" name="nota[artes][7]" placeholder="—"></td>
+                                <td><input type="number" step="0.01" min="0" max="10" class="input-nota" name="nota[artes][8]" placeholder="—"></td>
+                                <td><input type="number" step="0.01" min="0" max="10" class="input-nota" name="nota[artes][9]" placeholder="—"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-top:16px;">
+                    <p style="font-size:.78rem; color:var(--text-muted); margin:0;">
+                        💡 Campos em branco são ignorados no cálculo. A média usa todas as notas preenchidas.
+                    </p>
+                    <div class="media-display-box" id="media-display" style="display:none;">
+                        Média: <span id="media-valor" style="font-family:monospace;">0.00000</span>
+                    </div>
+                </div>
             </div>
 
-            <div class="grades-section">
-                <h3>Notas (Português e Matemática)</h3>
-                <table>
-                    <tr>
-                        <th>Disciplina</th>
-                        <th>6º Ano</th><th>7º Ano</th><th>8º Ano</th><th>9º Ano</th>
-                    </tr>
-                    <tr>
-                        <td>Português</td>
-                        <td><input type="number" step="0.01" class="input-nota" name="lp6"></td>
-                        <td><input type="number" step="0.01" class="input-nota" name="lp7"></td>
-                        <td><input type="number" step="0.01" class="input-nota" name="lp8"></td>
-                        <td><input type="number" step="0.01" class="input-nota" name="lp9"></td>
-                    </tr>
-                    <tr>
-                        <td>Matemática</td>
-                        <td><input type="number" step="0.01" class="input-nota" name="mat6"></td>
-                        <td><input type="number" step="0.01" class="input-nota" name="mat7"></td>
-                        <td><input type="number" step="0.01" class="input-nota" name="mat8"></td>
-                        <td><input type="number" step="0.01" class="input-nota" name="mat9"></td>
-                    </tr>
-                </table>
+            <!-- MODAL OCR -->
+            <div id="ocr-overlay" style="position:fixed; inset:0; background:rgba(0,0,0,.55); backdrop-filter:blur(3px); z-index:9000; align-items:center; justify-content:center;">
+                <div style="background:#fff; border-radius:18px; width:min(560px,95vw); box-shadow:0 20px 60px rgba(0,0,0,.3); overflow:hidden; animation:ocrFadeIn .25s ease; max-height:90vh; overflow-y:auto;">
+                    <div style="background:linear-gradient(135deg,#0e5200,#1b8a00); padding:20px 24px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:1;">
+                        <div>
+                            <div style="font-size:1.05rem; font-weight:800; color:#fff;">📷 OCR de Notas com IA</div>
+                            <div style="color:rgba(255,255,255,.65); font-size:.78rem; margin-top:3px;">A IA lê todos os números do boletim automaticamente</div>
+                        </div>
+                        <button type="button" id="btn-fechar-ocr" style="background:rgba(255,255,255,.15); border:none; color:#fff; font-size:1.2rem; width:34px; height:34px; border-radius:50%; cursor:pointer; display:flex; align-items:center; justify-content:center;">✕</button>
+                    </div>
+                    <div style="padding:24px;">
+                        <div id="ocr-upload-zone" style="border:2.5px dashed #b2d8b0; border-radius:14px; padding:32px 20px; text-align:center; cursor:pointer; transition:border-color .2s, background .2s; position:relative; background:#f9fdf9;"
+                             onmouseover="this.style.borderColor='#1b8a00';this.style.background='#f0fbf0'"
+                             onmouseout="this.style.borderColor='#b2d8b0';this.style.background='#f9fdf9'">
+                            <input type="file" id="ocr-file-input" accept="image/*" style="position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;">
+                            <span id="ocr-upload-icon" style="font-size:2.4rem; display:block; margin-bottom:10px;">🖼️</span>
+                            <div id="ocr-upload-label" style="font-weight:700; color:#1b8a00; font-size:.95rem;">Clique ou arraste a imagem do boletim</div>
+                            <div style="color:#6b8268; font-size:.8rem; margin-top:4px;">JPG, PNG, WEBP — foto do celular funciona!</div>
+                        </div>
+                        <div id="ocr-preview-wrap" style="display:none; margin-top:14px; text-align:center;">
+                            <img id="ocr-preview-img" style="max-height:200px; max-width:100%; border-radius:10px; border:1px solid #d4e4d0;" alt="preview">
+                            <div id="ocr-preview-name" style="font-size:.75rem; color:#6b8268; margin-top:6px; font-family:monospace;"></div>
+                        </div>
+                        <div id="ocr-status" style="display:none; align-items:center; gap:12px; background:#f0f7f0; border-left:4px solid #1b8a00; border-radius:10px; padding:13px 16px; margin-top:14px; font-size:.88rem; color:#3a5c38;">
+                            <div id="ocr-spinner" style="width:20px;height:20px;border:3px solid #d4e4d0;border-top-color:#1b8a00;border-radius:50%;animation:spin .8s linear infinite;flex-shrink:0;"></div>
+                            <span id="ocr-status-msg">Analisando imagem…</span>
+                        </div>
+                        <div id="ocr-resultado" style="display:none; margin-top:16px;">
+                            <div style="font-weight:700; color:#1b8a00; font-size:.9rem; margin-bottom:8px;">✅ Notas encontradas — confira e ajuste se necessário:</div>
+                            <div id="ocr-chips-container" style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:12px;"></div>
+                            <div id="ocr-media-preview" style="background:#f0f7f0; border-radius:10px; padding:10px 14px; font-size:.88rem; color:#1b8a00; font-weight:600;"></div>
+                            <div id="ocr-obs" style="display:none; background:#fff8e1; border:1px solid #ffe082; border-radius:10px; padding:10px 14px; margin-top:10px; font-size:.82rem; color:#795548;"></div>
+                        </div>
+                        <div id="ocr-aviso" style="display:none; background:#fff5f5; border:1px solid #ffcdd2; border-radius:10px; padding:12px 16px; margin-top:14px; font-size:.83rem; color:#c62828;"></div>
+                        <div style="display:flex; gap:10px; margin-top:20px;">
+                            <button type="button" id="btn-ocr-analisar" disabled style="flex:1; background:linear-gradient(135deg,#1b8a00,#0e5200); color:#fff; border:none; padding:13px; border-radius:30px; font-weight:700; font-size:.95rem; cursor:pointer; opacity:.45; transition:opacity .2s, transform .15s;">🔍 Analisar com IA</button>
+                            <button type="button" id="btn-ocr-usar" style="display:none; background:#e67e22; color:#fff; border:none; padding:13px 18px; border-radius:30px; font-weight:700; font-size:.9rem; cursor:pointer;">✅ Usar notas</button>
+                            <button type="button" id="btn-ocr-limpar" style="background:#f0f0f0; color:#555; border:none; padding:13px 18px; border-radius:30px; font-weight:600; font-size:.9rem; cursor:pointer;">Limpar</button>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <button type="submit" class="btn-save" style="margin-top: 20px;">SALVAR ALUNO</button>
+            <button type="submit" class="btn-save">✅ SALVAR CADASTRO</button>
         </form>
     </main>
 
-    <script src="script.js"></script>
+    <script>
+    // ══════════════════════════════════════════
+    //  CÁLCULO AUTOMÁTICO DA MÉDIA (36 notas)
+    // ══════════════════════════════════════════
+    function atualizarMedia() {
+        const inputs = document.querySelectorAll('.input-nota');
+        let soma = 0, qtd = 0;
+        inputs.forEach(inp => {
+            const v = parseFloat(inp.value);
+            if (!isNaN(v) && inp.value.trim() !== '') { soma += v; qtd++; }
+        });
+        const media = qtd > 0 ? (soma / qtd) : 0;
+        document.getElementById('media_final').value = media.toFixed(5);
+
+        const disp = document.getElementById('media-display');
+        const val  = document.getElementById('media-valor');
+        if (qtd > 0) {
+            val.textContent = media.toFixed(5) + ' (' + qtd + ' nota' + (qtd !== 1 ? 's' : '') + ')';
+            disp.style.display = 'inline-flex';
+        } else {
+            disp.style.display = 'none';
+        }
+    }
+
+    // Escuta mudanças em todos os inputs de nota
+    document.querySelectorAll('.input-nota').forEach(inp => {
+        inp.addEventListener('input', atualizarMedia);
+    });
+
+    // ══════════════════════════════════════════
+    //  LÓGICA DE CATEGORIA AO SUBMETER
+    // ══════════════════════════════════════════
+    document.querySelector('.student-form').addEventListener('submit', function() {
+        const bairro    = (document.getElementById('bairro').value || '').toLowerCase();
+        const optouCota = document.getElementById('optou_cota_local').value;
+        const procedencia = document.getElementById('procedencia').value;
+        const pcd       = document.getElementById('pcd').value;
+
+        let categoria = '';
+        if (pcd === 'sim') {
+            categoria = 'Cota PCD';
+        } else if (procedencia === 'publica' && optouCota === 'sim' &&
+                   (bairro.includes('venancio') || bairro.includes('venâncio'))) {
+            categoria = 'Cota Local (Venâncios)';
+        } else if (procedencia === 'privada') {
+            categoria = 'Ampla Concorrência Privado';
+        } else {
+            categoria = 'Ampla Concorrência Pública';
+        }
+        document.getElementById('categoria_ranking').value = categoria;
+        atualizarMedia(); // garante média atualizada no submit
+    });
+
+    // ══════════════════════════════════════════
+    //  OCR MODAL
+    // ══════════════════════════════════════════
+    (function() {
+        let imgBase64 = null, imgTipo = 'image/jpeg', notasOCR = [];
+
+        const overlay   = document.getElementById('ocr-overlay');
+        const btnAbrir  = document.getElementById('btn-abrir-ocr');
+        const btnFechar = document.getElementById('btn-fechar-ocr');
+        const fileInput = document.getElementById('ocr-file-input');
+        const btnAnali  = document.getElementById('btn-ocr-analisar');
+        const btnLimpar = document.getElementById('btn-ocr-limpar');
+        const btnUsar   = document.getElementById('btn-ocr-usar');
+        const statusBox = document.getElementById('ocr-status');
+        const statusMsg = document.getElementById('ocr-status-msg');
+        const aviso     = document.getElementById('ocr-aviso');
+        const resultado = document.getElementById('ocr-resultado');
+
+        btnAbrir.addEventListener('click',  () => overlay.classList.add('aberto'));
+        btnFechar.addEventListener('click', fechar);
+        overlay.addEventListener('click',  e => { if (e.target === overlay) fechar(); });
+        function fechar() { overlay.classList.remove('aberto'); }
+
+        const zone = document.getElementById('ocr-upload-zone');
+        zone.addEventListener('dragover',  e => { e.preventDefault(); zone.style.borderColor='#1b8a00'; zone.style.background='#f0fbf0'; });
+        zone.addEventListener('dragleave', () => { zone.style.borderColor='#b2d8b0'; zone.style.background='#f9fdf9'; });
+        zone.addEventListener('drop', e => {
+            e.preventDefault();
+            zone.style.borderColor='#b2d8b0'; zone.style.background='#f9fdf9';
+            if (e.dataTransfer.files[0]) carregarArquivo(e.dataTransfer.files[0]);
+        });
+        fileInput.addEventListener('change', () => { if (fileInput.files[0]) carregarArquivo(fileInput.files[0]); });
+
+        function carregarArquivo(file) {
+            imgTipo = file.type || 'image/jpeg';
+            const reader = new FileReader();
+            reader.onload = e => {
+                imgBase64 = e.target.result.split(',')[1];
+                document.getElementById('ocr-preview-img').src = e.target.result;
+                document.getElementById('ocr-preview-name').textContent = `📎 ${file.name} · ${(file.size/1024).toFixed(0)} KB`;
+                document.getElementById('ocr-preview-wrap').style.display = 'block';
+                document.getElementById('ocr-upload-icon').textContent = '✅';
+                document.getElementById('ocr-upload-label').textContent = file.name;
+                btnAnali.disabled = false;
+                statusBox.style.display = 'none';
+                aviso.style.display = 'none';
+                resultado.style.display = 'none';
+                btnUsar.style.display = 'none';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        btnLimpar.addEventListener('click', () => {
+            imgBase64 = null; fileInput.value = '';
+            document.getElementById('ocr-preview-wrap').style.display = 'none';
+            document.getElementById('ocr-upload-icon').textContent = '🖼️';
+            document.getElementById('ocr-upload-label').textContent = 'Clique ou arraste a imagem do boletim';
+            btnAnali.disabled = true;
+            statusBox.style.display = 'none';
+            aviso.style.display = 'none';
+            resultado.style.display = 'none';
+            btnUsar.style.display = 'none';
+            notasOCR = [];
+        });
+
+        btnAnali.addEventListener('click', analisar);
+
+        async function analisar() {
+            if (!imgBase64) return;
+            btnAnali.disabled = true;
+            btnUsar.style.display = 'none';
+            resultado.style.display = 'none';
+            aviso.style.display = 'none';
+            statusBox.style.cssText = 'display:flex; align-items:center; gap:12px; background:#f0f7f0; border-left:4px solid #1b8a00; border-radius:10px; padding:13px 16px; margin-top:14px; font-size:.88rem; color:#3a5c38;';
+            statusMsg.textContent = 'Enviando imagem para a IA…';
+            document.getElementById('ocr-spinner').style.display = 'block';
+            try {
+                const resp = await fetch('ocr_proxy.php', {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ imagem: imgBase64, tipo: imgTipo })
+                });
+                const json = await resp.json();
+                if (json.erro) {
+                    // Se for erro de cota, mostra countdown e retry automático
+                    if (resp.status === 429 || json.erro.includes('Limite') || json.erro.includes('quota')) {
+                        mostrarErroComRetry(json.erro, 10);
+                    } else {
+                        mostrarErro('⚠️ ' + json.erro);
+                        btnAnali.disabled = false;
+                    }
+                    return;
+                }
+                notasOCR = (json.notas || []).map(n => parseFloat(n)).filter(n => !isNaN(n) && n >= 0 && n <= 10);
+                if (notasOCR.length === 0) { mostrarErro('⚠️ Nenhuma nota legível encontrada. Verifique a imagem e tente novamente.'); btnAnali.disabled = false; return; }
+                renderizarChips(notasOCR, json.obs);
+                statusBox.style.display = 'none';
+                resultado.style.display = 'block';
+                btnUsar.style.display = 'block';
+                btnAnali.disabled = false;
+            } catch (err) {
+                mostrarErro('❌ Erro ao analisar. (' + err.message + ')');
+                btnAnali.disabled = false;
+            }
+        }
+
+        // Mostra erro com contagem regressiva e retry automático
+        function mostrarErroComRetry(msg, segundos) {
+            let restante = segundos;
+            mostrarErro(`⏳ ${msg} Tentando novamente em ${restante}s…`);
+            const intervalo = setInterval(() => {
+                restante--;
+                if (restante <= 0) {
+                    clearInterval(intervalo);
+                    statusMsg.textContent = '🔄 Tentando novamente…';
+                    analisar();
+                } else {
+                    statusMsg.textContent = `⏳ Limite de requisições atingido. Tentando novamente em ${restante}s…`;
+                }
+            }, 1000);
+        }
+
+        function renderizarChips(notas, obs) {
+            const container = document.getElementById('ocr-chips-container');
+            container.innerHTML = '';
+            notas.forEach((n, i) => {
+                const chip = document.createElement('span');
+                chip.className = 'ocr-chip';
+                chip.dataset.index = i; chip.dataset.valor = n;
+                chip.innerHTML = `${n.toFixed(2)} <span class="chip-x">✕</span>`;
+                chip.title = 'Clique para remover';
+                chip.addEventListener('click', () => { chip.classList.toggle('removido'); atualizarPreviewMedia(); });
+                container.appendChild(chip);
+            });
+            atualizarPreviewMedia();
+            const obsEl = document.getElementById('ocr-obs');
+            if (obs && obs.trim()) { obsEl.textContent = '💬 ' + obs; obsEl.style.display = 'block'; }
+            else obsEl.style.display = 'none';
+        }
+
+        function atualizarPreviewMedia() {
+            const chips = document.querySelectorAll('.ocr-chip:not(.removido)');
+            let soma = 0, qtd = 0;
+            chips.forEach(c => { soma += parseFloat(c.dataset.valor); qtd++; });
+            const media = qtd > 0 ? soma / qtd : 0;
+            document.getElementById('ocr-media-preview').textContent =
+                `📊 ${qtd} nota${qtd !== 1 ? 's' : ''} selecionada${qtd !== 1 ? 's' : ''} · Média: ${media.toFixed(5)}`;
+        }
+
+        // Quando clicar "Usar notas", preenche os inputs da tabela sequencialmente
+        btnUsar.addEventListener('click', () => {
+            const chips = document.querySelectorAll('.ocr-chip:not(.removido)');
+            const notasSelecionadas = Array.from(chips).map(c => parseFloat(c.dataset.valor));
+            if (notasSelecionadas.length === 0) { alert('Nenhuma nota selecionada.'); return; }
+
+            const inputs = document.querySelectorAll('.input-nota');
+            // Limpa tudo e preenche sequencialmente
+            inputs.forEach(inp => inp.value = '');
+            notasSelecionadas.forEach((v, i) => {
+                if (inputs[i]) inputs[i].value = v.toFixed(2);
+            });
+            atualizarMedia();
+            fechar();
+        });
+
+        function mostrarErro(msg) {
+            document.getElementById('ocr-spinner').style.display = 'none';
+            statusMsg.textContent = msg;
+            statusBox.style.cssText = 'display:flex; align-items:center; gap:12px; background:#fff5f5; border-left:4px solid #e53935; border-radius:10px; padding:13px 16px; margin-top:14px; font-size:.88rem; color:#c62828;';
+            statusBox.style.display = 'flex';
+        }
+    })();
+    </script>
+
+    <script>
+    // Hamburguer sidebar
+    (function(){
+        const btn = document.getElementById('btn-hamburguer');
+        const sidebar = document.getElementById('sidebar-lateral');
+        const overlay = document.getElementById('overlay-menu');
+        if (!btn) return;
+        function abrir(){ btn.classList.add('aberto'); sidebar.classList.add('aberta'); overlay.classList.add('aberto'); }
+        function fechar(){ btn.classList.remove('aberto'); sidebar.classList.remove('aberta'); overlay.classList.remove('aberto'); }
+        btn.addEventListener('click', () => sidebar.classList.contains('aberta') ? fechar() : abrir());
+        overlay.addEventListener('click', fechar);
+    })();
+    </script>
+
 </body>
 </html>

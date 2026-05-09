@@ -111,8 +111,8 @@ $rankingValues   = json_encode(array_values($rankingData));
 <title>Dashboard – Sistema de Cadastro</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
   /* =============================================
      DASHBOARD - Estilos exclusivos
@@ -134,46 +134,10 @@ $rankingValues   = json_encode(array_values($rankingData));
 
   body { background: var(--bg); font-family: 'Outfit', sans-serif; color: var(--text-dark); }
 
-  /* ---- NAVBAR ---- */
-  .navbar {
-    background: linear-gradient(90deg, var(--green-dark) 0%, var(--green-main) 100%);
-    color: #fff;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 28px;
-    height: 62px;
-    position: sticky;
-    top: 0;
-    z-index: 900;
-    box-shadow: 0 2px 8px rgba(0,0,0,.25);
-  }
-
+  /* ---- NAVBAR — usa style.css base, apenas ajustes locais ---- */
   .navbar-left   { display: flex; align-items: center; gap: 14px; }
-  .navbar-center { display: flex; gap: 4px; }
-  .navbar-right  { display: flex; align-items: center; gap: 10px; }
-
-  .user-block .user-name { font-weight: 600; font-size: .9rem; line-height: 1.2; }
-  .user-block .user-role { font-size: .72rem; opacity: .7; }
-
-  .nav-link {
-    color: rgba(255,255,255,.8);
-    text-decoration: none;
-    padding: 8px 18px;
-    border-radius: 8px;
-    font-size: .88rem;
-    font-weight: 500;
-    transition: background .2s, color .2s;
-  }
-  .nav-link:hover      { background: rgba(255,255,255,.12); color: #fff; }
-  .nav-link.active     { background: #fff; color: var(--green-main); font-weight: 700; }
-
-  .nav-icon-btn {
-    background: none; border: none; cursor: pointer;
-    color: #fff; font-size: 1.1rem; padding: 6px;
-    border-radius: 6px; transition: background .2s;
-  }
-  .nav-icon-btn:hover { background: rgba(255,255,255,.15); }
+  .navbar-center { display: flex; gap: 4px; justify-content: center; }
+  .navbar-right  { display: flex; align-items: center; gap: 10px; justify-content: flex-end; }
 
   /* ---- LAYOUT PRINCIPAL ---- */
   .dash-wrapper { padding: 28px 32px; max-width: 1280px; margin: 0 auto; }
@@ -296,6 +260,7 @@ $rankingValues   = json_encode(array_values($rankingData));
   .stat-card:nth-child(3) { animation-delay: .15s; }
   .stat-card:nth-child(4) { animation-delay: .20s; }
   .stat-card:nth-child(5) { animation-delay: .25s; }
+  .stat-card:nth-child(6) { animation-delay: .30s; }
 
   .chart-card { animation: fadeUp .5s ease both; animation-delay: .3s; }
 </style>
@@ -305,37 +270,50 @@ $rankingValues   = json_encode(array_values($rankingData));
 <!-- ===================== OVERLAY ===================== -->
 <div id="overlay-menu"></div>
 
+<!-- ===================== SIDEBAR ===================== -->
+<nav id="sidebar-lateral">
+  <a href="dashboard.php" class="active-link">📊 Dashboard</a>
+  <a href="cadastro.html">📋 Cadastro</a>
+  <a href="ranking.php">🏆 Ranking</a>
+  <a href="index.HTML">🚪 Sair</a>
+  <div class="sidebar-footer">EEEP Manoel Mano © 2026</div>
+</nav>
+
 <!-- ===================== NAVBAR ===================== -->
 <nav class="navbar">
   <div class="navbar-left">
-    <button id="btn-menu-hamburguer" aria-label="Menu" aria-expanded="false">
+    <button class="btn-hamburguer" id="btn-hamburguer" aria-label="Menu">
       <span></span><span></span><span></span>
     </button>
+    <a class="navbar-brand" href="index.HTML">
+      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJgsXhRW5qdtpDbZWZmmPzg9njNJXOGcYLpQ&s" alt="Logo">
+      EEEP Manoel Mano
+    </a>
+  </div>
+  <div class="navbar-center">
+    <a href="dashboard.php" class="nav-link active">Painel</a>
+    <a href="cadastro.html" class="nav-link">Cadastro</a>
+    <a href="ranking.php"   class="nav-link">Ranking</a>
+  </div>
+  <div class="navbar-right">
     <div class="user-block">
       <span class="user-name"><?= htmlspecialchars($nomeUsuario) ?></span>
       <span class="user-role">Secretária</span>
     </div>
-  </div>
-
-  <div class="navbar-center">
-    <a href="ocr-notas.html"  class="nav-link">Cadastro Aluno</a>
-    <a href="dashboard.php" class="nav-link active">Dashboard</a>
-    <a href="ranking.php"   class="nav-link">Ranking</a>
-  </div>
-
-  <div class="navbar-right">
-    <button class="nav-icon-btn" title="Sair" onclick="window.location.href='logout.php'">🚪</button>
+    <a href="index.HTML" class="btn-sair">Sair</a>
   </div>
 </nav>
 
-<!-- ===================== SIDEBAR ===================== -->
-<nav id="sidebar-lateral">
-  <a href="index.html">Início</a>
-  <a href="cadastro.html">Cadastro</a>
-  <a href="dashboard.php" class="active-link">Dashboard</a>
-  <a href="ranking.php">Ranking</a>
-  <div class="sidebar-footer">Sistema de Matrículas © 2025</div>
-</nav>
+<script>
+(function(){
+  const btn = document.getElementById('btn-hamburguer');
+  const sidebar = document.getElementById('sidebar-lateral');
+  const overlay = document.getElementById('overlay-menu');
+  function fechar(){ btn.classList.remove('aberto'); sidebar.classList.remove('aberta'); overlay.classList.remove('aberto'); }
+  btn.addEventListener('click', () => sidebar.classList.contains('aberta') ? fechar() : (btn.classList.add('aberto'), sidebar.classList.add('aberta'), overlay.classList.add('aberto')));
+  overlay.addEventListener('click', fechar);
+})();
+</script>
 
 <!-- ===================== CONTEÚDO PRINCIPAL ===================== -->
 <main class="dash-wrapper">
@@ -371,6 +349,11 @@ $rankingValues   = json_encode(array_values($rankingData));
       <span class="stat-label">Escola Pública</span>
       <span class="stat-value"><?= $procedenciaData['Pública'] ?></span>
       <span class="stat-sub">procedência pública</span>
+    </div>
+    <div class="stat-card orange">
+      <span class="stat-label">Escola Privada</span>
+      <span class="stat-value"><?= $procedenciaData['Privada'] ?></span>
+      <span class="stat-sub">procedência privada</span>
     </div>
   </div>
 
