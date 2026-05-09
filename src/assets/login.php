@@ -1,62 +1,126 @@
 <?php
-session_start();
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
-// 1. Configurações de Conexão
 $host = "localhost";
 $user = "root";
 $pass = ""; 
 $dbname = "sistema_login"; 
 
 $conn = new mysqli($host, $user, $pass, $dbname);
+if ($conn->connect_error) { die("Erro: " . $conn->connect_error); }
 
-if ($conn->connect_error) {
-    die("Falha na conexão: " . $conn->connect_error);
-}
+$curso = isset($_GET['curso']) ? $_GET['curso'] : 'Enfermagem';
 
-// 2. Verificar requisição
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+function renderizarBloco($titulo, $sql, $vagas, $conn) {
+    $result = $conn->query($sql);
+    echo "<tr><td colspan='5' class='secao-titulo'>$titulo (Vagas: $vagas)</td></tr>";
     
-    $email = $_POST['email'] ?? '';
-    $senha = $_POST['senha'] ?? '';
-
-    if (empty($email) || empty($senha)) {
-        die("Por favor, preencha todos os campos.");
-    }
-
-    // 3. Buscar usuário no banco
-    $sql = "SELECT id, nome, senha FROM usuarios WHERE email = ?";
-    $stmt = $conn->prepare($sql);
-    
-    if (!$stmt) {
-        die("Erro SQL: " . $conn->error);
-    }
-
-    $stmt->bind_param("s", $email);
-    $stmt->execute();
-    $result = $stmt->get_result();
-
-    // 4. Validar e Logar
-    if ($result->num_rows > 0) {
-        $usuario = $result->fetch_assoc();
-        
-        if (password_verify($senha, $usuario['senha'])) {
-            // Sucesso! Cria uma sessão e redireciona.
-            $_SESSION['usuario_logado'] = true;
-            $_SESSION['usuario_nome'] = $usuario['nome'];
+    if ($result && $result->num_rows > 0) {
+        $posicao = 1;
+        while ($aluno = $result->fetch_assoc()) {
+            $situacao = ($posicao <= $vagas) ? "CLASSIFICADO(A)" : "NÃO CLASSIFICADO(A)";
+            $classe = ($posicao <= $vagas) ? "linha-classificado" : "linha-espera";
             
-            header("Location: cadastro.html");
-            exit();
-        } else {
-            echo "<script>alert('Senha incorreta.'); window.location.href='index.html';</script>";
+            echo "<tr class='$classe'>
+                    <td>$posicao</td>
+                    <td class='text-left'>{$aluno['nome_completo']}</td>
+                    <td>$titulo</td>
+                    <td>$situacao</td>
+                    <td>" . number_format($aluno['media_geral'], 5, ',', '.') . "</td>
+                  </tr>";
+            $posicao++;
         }
     } else {
-        echo "<script>alert('E-mail não encontrado.'); window.location.href='index.html';</script>";
+        echo "<tr><td colspan='5' style='padding:10px;'>Nenhum candidato registrado nesta categoria.</td></tr>";
     }
-
-    $stmt->close();
 }
-
-$conn->close();
 ?>
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Ranking Oficial - EEEP Manoel Mano</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f4f4f4; }
+        .navbar { background-color: #1b8a00; padding: 15px 0; text-align: center; width: 100%; }
+        .navbar .menu a { color: white; text-decoration: none; padding: 10px 20px; font-weight: bold; }
+        .navbar .menu a.active { border-bottom: 3px solid white; }
+        .filtro-container { text-align: center; margin: 20px 0; }
+        .folha-pdf { background-color: #fff; width: 900px; margin: 0 auto 50px auto; padding: 50px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border: 1px solid #ddd; }
+        .header-pdf { text-align: center; margin-bottom: 30px; border-bottom: 2px solid #000; padding-bottom: 15px; }
+        .header-pdf h1 { font-size: 18px; text-decoration: underline; }
+        table { width: 100%; border-collapse: collapse; }
+        th { border: 1px solid #000; padding: 10px; font-size: 11px; background: #f0f0f0; }
+        td { border: 1px solid #000; padding: 8px; font-size: 11px; text-align: center; }
+        .secao-titulo { background-color: #d1d1d1; font-weight: bold; text-align: left; padding: 10px; border: 2px solid #000; }
+        .text-left { text-align: left; padding-left: 10px; text-transform: uppercase; }
+        .linha-classificado { font-weight: bold; color: #000; }
+        .linha-espera { color: #888; font-style: italic; }
+        @media print { .navbar, .filtro-container { display: none; } .folha-pdf { box-shadow: none; border: none; width: 100%; } }
+    </style>
+</head>
+<body>
+
+    <header class="navbar">
+        <nav class="menu">
+            <a href="dashboard.php">Painel</a>
+            <a href="cadastro.html">Cadastro</a>
+            <a href="ranking.php" class="active">Ranking</a>
+            <a href="../../index.html">Sair</a>
+        </nav>
+    </header>
+
+    <div class="filtro-container">
+        <form method="GET">
+            <label><b>FILTRAR POR CURSO:</b> </label>
+            <select name="curso" onchange="this.form.submit()">
+                <option value="Enfermagem" <?= $curso=='Enfermagem'?'selected':'' ?>>ENFERMAGEM</option>
+                <option value="Informatica" <?= $curso=='Informatica'?'selected':'' ?>>INFORMÁTICA</option>
+                <option value="Administracao" <?= $curso=='Administracao'?'selected':'' ?>>ADMINISTRAÇÃO</option>
+                <option value="Comercio" <?= $curso=='Comercio'?'selected':'' ?>>COMÉRCIO</option>
+            </select>
+        </form>
+    </div>
+
+    <div class="folha-pdf">
+        <div class="header-pdf">
+            <p>GOVERNO DO ESTADO DO CEARÁ</p>
+            <p>SECRETARIA DA EDUCAÇÃO - SEDUC</p>
+            <p>EEEP MANOEL MANO - CRATEÚS</p>
+            <h1>RESULTADO PRELIMINAR - SELEÇÃO DE ALUNOS 2026</h1>
+            <p style="margin-top:10px; font-size: 14px;"><b>CURSO TÉCNICO EM: <?php echo strtoupper($curso); ?></b></p>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th width="5%">ORDEM</th>
+                    <th width="45%">NOME COMPLETO</th>
+                    <th width="25%">TIPO CONCORRÊNCIA</th>
+                    <th width="15%">SITUAÇÃO</th>
+                    <th width="10%">MÉDIA</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php 
+                // 1. COTA PCD (Sempre os primeiros a serem listados separadamente)
+                renderizarBloco("COTA PESSOA COM DEFICIÊNCIA (PCD)", 
+                    "SELECT * FROM alunos WHERE curso LIKE '%$curso%' AND pcd = 'sim' ORDER BY media_geral DESC", 2, $conn);
+
+                // 2. COTA LOCAL (Venâncios - 20% das vagas da pública, ex: 9 vagas)
+                renderizarBloco("COTA LOCAL (BAIRRO DOS VENÂNCIOS)", 
+                    "SELECT * FROM alunos WHERE curso LIKE '%$curso%' AND categoria_ranking = 'Cota Local (Venâncios)' AND pcd = 'nao' ORDER BY media_geral DESC", 9, $conn);
+
+                // 3. AMPLA CONCORRÊNCIA PÚBLICA (Restante das vagas públicas)
+                renderizarBloco("AMPLA CONCORRÊNCIA PÚBLICA", 
+                    "SELECT * FROM alunos WHERE curso LIKE '%$curso%' AND categoria_ranking = 'Ampla Concorrência Pública' AND pcd = 'nao' ORDER BY media_geral DESC", 28, $conn);
+
+                // 4. AMPLA CONCORRÊNCIA PRIVADO (Geralmente 20% do total, ex: 8 vagas)
+                renderizarBloco("AMPLA CONCORRÊNCIA PRIVADO", 
+                    "SELECT * FROM alunos WHERE curso LIKE '%$curso%' AND categoria_ranking = 'Ampla Concorrência Privado' AND pcd = 'nao' ORDER BY media_geral DESC", 8, $conn);
+                ?>
+            </tbody>
+        </table>
+    </div>
+
+</body>
+</html>

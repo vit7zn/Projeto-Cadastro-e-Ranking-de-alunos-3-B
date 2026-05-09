@@ -129,7 +129,7 @@ function renderizarBloco($titulo, $sql, $vagas, $conn) {
                 <option value="Enfermagem" <?= $curso=='Enfermagem'?'selected':'' ?>>ENFERMAGEM</option>
                 <option value="Informatica" <?= $curso=='Informatica'?'selected':'' ?>>INFORMÁTICA</option>
                 <option value="Administracao" <?= $curso=='Administracao'?'selected':'' ?>>ADMINISTRAÇÃO</option>
-                <option value="Comercio" <?= $curso=='Comercio'?'selected':'' ?>>COMÉRCIO</option>
+                <option value="Desenvolvimento de Sistemas" <?= $curso=='Desenvolvimento de Sistemas'?'selected':'' ?>>DESENVOLVIMENTO DE SISTEMAS</option>
             </select>
         </form>
     </div>

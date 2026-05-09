@@ -1,96 +1,64 @@
 document.addEventListener('DOMContentLoaded', () => {
-    
-    // --- LÓGICA DE ALTERNÂNCIA (LOGIN / CADASTRO) ---
-    const loginForm = document.getElementById('loginForm');
-    const registerForm = document.getElementById('registerForm');
-    const linkCadastro = document.getElementById('linkCadastro');
-    const linkLogin = document.getElementById('linkLogin');
-    
-    const welcomeTitle = document.getElementById('welcome-title');
-    const welcomeSubtitle = document.getElementById('welcome-subtitle');
+    const studentForm = document.querySelector('.student-form');
 
-    if (linkCadastro && linkLogin) {
-        // Mostrar form de Cadastro
-        linkCadastro.addEventListener('click', (e) => {
-            e.preventDefault();
-            loginForm.style.display = 'none';
-            registerForm.style.display = 'block';
-            welcomeTitle.innerText = "Crie sua Conta";
-            welcomeSubtitle.innerText = "Preencha os dados abaixo para se cadastrar";
-        });
+    if (studentForm) {
+        studentForm.addEventListener('submit', function(e) {
+            // 1. CAPTURA DOS CAMPOS PARA LÓGICA DE COTAS
+            const bairro = document.getElementById('bairro').value.toLowerCase();
+            const optouCota = document.getElementById('optou_cota_local').value;
+            const procedencia = document.getElementById('procedencia').value;
+            const pcd = document.getElementById('pcd').value;
+            
+            let categoria = "";
 
-        // Mostrar form de Login
-        linkLogin.addEventListener('click', (e) => {
-            e.preventDefault();
-            registerForm.style.display = 'none';
-            loginForm.style.display = 'block';
-            welcomeTitle.innerText = "Olá, Seja bem-vindo!";
-            welcomeSubtitle.innerText = "Faça o seu login para acessar a sua conta";
-        });
-    }
-
-    // --- VALIDAÇÃO DO FORMULÁRIO DE CADASTRO ---
-    if (registerForm) {
-        registerForm.addEventListener('submit', function(e) {
-            const senha = document.getElementById('senha_cadastro').value;
-            const confirmaSenha = document.getElementById('confirma_senha').value;
-
-            if (senha !== confirmaSenha) {
-                e.preventDefault(); // Impede o envio do formulário
-                alert('As senhas não coincidem! Por favor, verifique.');
-                document.getElementById('confirma_senha').focus();
+            // 2. LÓGICA DE DEFINIÇÃO DA CATEGORIA (RANKING)
+            if (pcd === 'sim') {
+                categoria = "Cota PCD";
+            } else if (procedencia === 'publica' && optouCota === 'sim' && (bairro.includes('venancio') || bairro.includes('venâncio'))) {
+                categoria = "Cota Local (Venâncios)";
+            } else if (procedencia === 'privada') {
+                categoria = "Ampla Concorrência Privado";
+            } else {
+                categoria = "Ampla Concorrência Pública";
             }
+
+            // Atribui a categoria ao campo oculto
+            document.getElementById('categoria_ranking').value = categoria;
+
+
+            // 3. LÓGICA DE CÁLCULO DA MÉDIA
+            const camposNotas = document.querySelectorAll('.input-nota');
+            let somaTotal = 0;
+            let quantidadeNotas = 0;
+
+            camposNotas.forEach(input => {
+                if (input.value !== "" && !isNaN(input.value)) {
+                    somaTotal += parseFloat(input.value);
+                    quantidadeNotas++;
+                }
+            });
+
+            // Cálculo com 5 casas decimais (padrão de desempate de EEEPs)
+            const mediaFinal = quantidadeNotas > 0 ? (somaTotal / quantidadeNotas).toFixed(5) : "0.00000";
+
+            // Atribui a média ao campo oculto
+            document.getElementById('media_final').value = mediaFinal;
+
+
+            // LOG DE VERIFICAÇÃO (Aparece no F12 do navegador)
+            console.log("--- Resumo do Cadastro ---");
+            console.log("Categoria Definida: " + categoria);
+            console.log("Média Final: " + mediaFinal);
+            
+            // O formulário prossegue para o 'salvar_cadastro.php' automaticamente
         });
     }
-});
 
-document.querySelector('.student-form').addEventListener('submit', function(e) {
-    e.preventDefault();
-
-    // Captura o bairro e as opções de cota
-    const bairroDigitado = document.getElementById('bairro').value.toLowerCase();
-    const selecionouCotaLocal = document.getElementsByName('cota_local')[0].value;
-    const procedencia = document.getElementsByName('procedencia')[0].value;
-    const ehPCD = document.getElementsByName('pcd')[0].value === 'sim';
-
-    // Regra de negócio: Cota Local só vale se morar no Bairro dos Venâncios
-    const temDireitoCotaLocal = (selecionouCotaLocal === 'sim' && bairroDigitado.includes('venancio'));
-
-    // Cálculo da Média
-    const camposNotas = document.querySelectorAll('.input-nota');
-    let somaTotal = 0;
-    let quantidadeNotas = 0;
-
-    camposNotas.forEach(input => {
-        if (input.value !== "") {
-            somaTotal += parseFloat(input.value);
-            quantidadeNotas++;
-        }
-    });
-
-    const mediaFinal = quantidadeNotas > 0 ? (somaTotal / quantidadeNotas).toFixed(2) : 0;
-
-    // DEFINIÇÃO DA CATEGORIA PARA O RANKING
-    let categoriaRanking = "";
-
-    if (ehPCD) {
-        categoriaRanking = "Cota PCD";
-    } else if (procedencia === 'privada' && temDireitoCotaLocal) {
-        categoriaRanking = "Privada - Cota Local (Venâncios)";
-    } else if (procedencia === 'privada') {
-        categoriaRanking = "Privada - Ampla Concorrência";
-    } else {
-        categoriaRanking = "Escola Pública";
+    // --- LÓGICA DE INTERAÇÃO DA NAVBAR (OPCIONAL/EXISTENTE NO SEU PROJETO) ---
+    const logoutBtn = document.getElementById('logout-btn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', () => {
+            window.location.href = 'index.html';
+        });
     }
-
-    // Objeto Final guardado na variável
-    const fichaAluno = {
-        nome: document.getElementsByName('nome_aluno')[0].value,
-        media: parseFloat(mediaFinal),
-        categoria: categoriaRanking,
-        bairro: bairroDigitado
-    };
-
-    console.log("Variável pronta para o Banco/Ranking:", fichaAluno);
-    alert(`Aluno cadastrado na categoria: ${categoriaRanking}\nMédia Final: ${mediaFinal}`);
 });
