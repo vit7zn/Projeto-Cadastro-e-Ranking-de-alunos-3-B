@@ -61,4 +61,63 @@ document.addEventListener('DOMContentLoaded', () => {
             window.location.href = 'index.html';
         });
     }
+<<<<<<< HEAD
 });
+=======
+
+    // Objeto Final guardado na variável
+    const fichaAluno = {
+        nome: document.getElementsByName('nome_aluno')[0].value,
+        media: parseFloat(mediaFinal),
+        categoria: categoriaRanking,
+        bairro: bairroDigitado
+    };
+
+    console.log("Variável pronta para o Banco/Ranking:", fichaAluno);
+    alert(`Aluno cadastrado na categoria: ${categoriaRanking}\nMédia Final: ${mediaFinal}`);
+});
+document.addEventListener('DOMContentLoaded', function() {
+    const btnMenu = document.getElementById('btn-menu-hamburguer');
+    const sidebar = document.getElementById('sidebar-lateral');
+    const overlay = document.getElementById('overlay-menu');
+
+    if (btnMenu && sidebar && overlay) {
+
+        // Abre/fecha o menu lateral
+        btnMenu.addEventListener('click', () => {
+            const isOpen = sidebar.classList.toggle('active');
+            overlay.classList.toggle('active', isOpen);
+            btnMenu.classList.toggle('open', isOpen);
+            btnMenu.setAttribute('aria-expanded', isOpen);
+        });
+
+        // Fecha ao clicar no overlay
+        overlay.addEventListener('click', () => {
+            sidebar.classList.remove('active');
+            overlay.classList.remove('active');
+            btnMenu.classList.remove('open');
+            btnMenu.setAttribute('aria-expanded', false);
+        });
+
+        // Fecha ao pressionar ESC
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && sidebar.classList.contains('active')) {
+                sidebar.classList.remove('active');
+                overlay.classList.remove('active');
+                btnMenu.classList.remove('open');
+                btnMenu.setAttribute('aria-expanded', false);
+            }
+        });
+
+        // Marca o link ativo com base na página atual
+        const paginaAtual = window.location.pathname.split('/').pop().toLowerCase();
+        const links = sidebar.querySelectorAll('a');
+        links.forEach(link => {
+            const href = link.getAttribute('href').toLowerCase();
+            if (href === paginaAtual || (paginaAtual === '' && href === 'index.html')) {
+                link.classList.add('active-link');
+            }
+        });
+    }
+});
+>>>>>>> 5ad12f0179e6cc54cf60c8698ac7edc0551d024e
