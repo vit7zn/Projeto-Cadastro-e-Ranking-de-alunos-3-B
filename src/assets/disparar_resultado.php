@@ -239,21 +239,58 @@ if ($rc) while ($r = $rc->fetch_assoc()) $cursos[] = $r['curso'];
 </head>
 <body>
 
+<!-- OVERLAY -->
+<div id="overlay-menu"></div>
+
+<!-- SIDEBAR LATERAL -->
+<nav id="sidebar-lateral">
+    <a href="dashboard.php">📊 Painel</a>
+    <a href="cadastro.html">📋 Cadastro</a>
+    <a href="ranking.php">🏆 Ranking</a>
+    <a href="disparar_resultado.php" class="active-link">📲 WhatsApp</a>
+    <a href="index.HTML">🚪 Sair</a>
+    <div class="sidebar-footer">EEEP Manoel Mano © 2026</div>
+</nav>
+
 <header class="navbar">
-    <a class="navbar-brand" href="index.HTML">
-        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJgsXhRW5qdtpDbZWZmmPzg9njNJXOGcYLpQ&s" alt="Logo">
-        EEEP Manoel Mano
-    </a>
-    <nav class="navbar-menu">
-        <a href="dashboard.php">Painel</a>
-        <a href="cadastro.html">Cadastro</a>
-        <a href="ranking.php">Ranking</a>
-        <a href="disparar_resultado.php" class="active">WhatsApp</a>
+    <div class="navbar-left">
+        <button class="btn-hamburguer" id="btn-hamburguer" aria-label="Menu">
+            <span></span><span></span><span></span>
+        </button>
+        <a class="navbar-brand" href="index.HTML">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJgsXhRW5qdtpDbZWZmmPzg9njNJXOGcYLpQ&s" alt="Logo">
+            EEEP Manoel Mano
+        </a>
+    </div>
+    <nav class="navbar-cards">
+        <a href="dashboard.php" class="nav-card">
+          <span class="nav-card-icon">📊</span><span>Painel</span>
+        </a>
+        <a href="cadastro.html" class="nav-card">
+          <span class="nav-card-icon">📋</span><span>Cadastro</span>
+        </a>
+        <a href="ranking.php" class="nav-card">
+          <span class="nav-card-icon">🏆</span><span>Ranking</span>
+        </a>
+        <a href="disparar_resultado.php" class="nav-card active" style="background:rgba(37,211,102,.15);border-color:rgba(37,211,102,.35);color:rgba(37,211,102,.9);">
+          <span class="nav-card-icon">📲</span><span>WhatsApp</span>
+        </a>
     </nav>
     <div class="navbar-right">
         <a href="index.HTML" class="btn-sair">Sair</a>
     </div>
 </header>
+
+<script>
+(function(){
+    const btn=document.getElementById('btn-hamburguer'),
+          sb=document.getElementById('sidebar-lateral'),
+          ov=document.getElementById('overlay-menu');
+    function f(){btn.classList.remove('aberto');sb.classList.remove('aberta');ov.classList.remove('aberto');}
+    btn.addEventListener('click',()=>sb.classList.contains('aberta')?f():(btn.classList.add('aberto'),sb.classList.add('aberta'),ov.classList.add('aberto')));
+    ov.addEventListener('click',f);
+})();
+</script>
 
 <main class="registration-container">
     <h1>📲 Disparar Resultado via WhatsApp</h1>

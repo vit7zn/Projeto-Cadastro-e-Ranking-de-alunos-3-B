@@ -293,17 +293,21 @@ body { background:var(--bg); font-family:'Outfit',sans-serif; color:var(--text);
       EEEP Manoel Mano
     </a>
   </div>
-  <div class="navbar-center">
-    <a href="dashboard.php" class="nav-link active">Painel</a>
-    <a href="cadastro.html" class="nav-link">Cadastro</a>
-    <a href="ranking.php"   class="nav-link">Ranking</a>
-    <a href="disparar_resultado.php" class="nav-link nav-link-whatsapp">📲 WhatsApp</a>
+  <div class="navbar-cards">
+    <a href="dashboard.php" class="nav-card active">
+      <span class="nav-card-icon">📊</span><span>Painel</span>
+    </a>
+    <a href="cadastro.html" class="nav-card">
+      <span class="nav-card-icon">📋</span><span>Cadastro</span>
+    </a>
+    <a href="ranking.php" class="nav-card">
+      <span class="nav-card-icon">🏆</span><span>Ranking</span>
+    </a>
+    <a href="disparar_resultado.php" class="nav-card" style="background:rgba(37,211,102,.1);border-color:rgba(37,211,102,.22);color:rgba(37,211,102,.85);">
+      <span class="nav-card-icon">📲</span><span>WhatsApp</span>
+    </a>
   </div>
   <div class="navbar-right">
-    <div class="user-block">
-      <span class="user-name"><?= htmlspecialchars($nomeUsuario) ?></span>
-      <span class="user-role">Secretária</span>
-    </div>
     <a href="index.HTML" class="btn-sair">Sair</a>
   </div>
 </nav>

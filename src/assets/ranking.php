@@ -281,11 +281,17 @@ body {
             EEEP Manoel Mano
         </a>
     </div>
-    <nav class="navbar-menu">
-        <a href="dashboard.php">Painel</a>
-        <a href="cadastro.html">Cadastro</a>
-        <a href="ranking.php" class="active">Ranking</a>
-    </nav>
+    <div class="navbar-cards">
+      <a href="dashboard.php" class="nav-card">
+        <span class="nav-card-icon">📊</span><span>Painel</span>
+      </a>
+      <a href="cadastro.html" class="nav-card">
+        <span class="nav-card-icon">📋</span><span>Cadastro</span>
+      </a>
+      <a href="ranking.php" class="nav-card active">
+        <span class="nav-card-icon">🏆</span><span>Ranking</span>
+      </a>
+    </div>
     <div class="navbar-right">
         <a href="index.HTML" class="btn-sair">Sair</a>
     </div>
