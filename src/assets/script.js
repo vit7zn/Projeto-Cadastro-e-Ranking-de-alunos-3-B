@@ -1,10 +1,10 @@
 // ══════════════════════════════════════════════════════════════
-//  script.js — EEEP Manoel Mano (versão limpa, sem conflitos)
+//  script.js — EEEP Manoel Mano 
 // ══════════════════════════════════════════════════════════════
 
 document.addEventListener('DOMContentLoaded', () => {
 
-    // ── Formulário de cadastro de aluno (cadastro.html) ──
+    // ── Formulário de cadastro de aluno (cadastro.php) ──
     const studentForm = document.querySelector('.student-form');
     if (studentForm) {
         studentForm.addEventListener('submit', function() {
@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // ── Botão de logout (se existir) ──
     const logoutBtn = document.getElementById('logout-btn');
     if (logoutBtn) {
-        logoutBtn.addEventListener('click', () => { window.location.href = 'index.HTML'; });
+        logoutBtn.addEventListener('click', () => { window.location.href = 'logout.php'; });
     }
 
 });
