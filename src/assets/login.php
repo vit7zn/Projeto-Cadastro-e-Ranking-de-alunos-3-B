@@ -33,7 +33,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if ($senhaValida) {
             $_SESSION['usuario_id'] = $usuario['id'];
             $_SESSION['nome']       = $usuario['nome'];
-            header("Location: cadastro.html?nome=" . urlencode($usuario['nome']));
+            session_write_close(); // Garante que a sessão é gravada antes do redirect
+            header("Location: dashboard.php");
             exit();
         } else {
             header("Location: index.HTML?erro=senha_incorreta");
