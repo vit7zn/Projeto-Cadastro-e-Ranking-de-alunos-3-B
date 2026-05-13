@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 28/04/2026 às 01:22
+-- Tempo de geração: 14/05/2026 às 01:15
 -- Versão do servidor: 10.4.32-MariaDB
--- Versão do PHP: 8.2.12
+-- Versão do PHP: 8.0.30
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -42,7 +42,28 @@ CREATE TABLE `alunos` (
   `pcd` enum('sim','nao') DEFAULT 'nao',
   `categoria_ranking` varchar(100) DEFAULT NULL,
   `media_geral` decimal(4,2) DEFAULT NULL,
-  `data_cadastro` timestamp NOT NULL DEFAULT current_timestamp()
+  `data_cadastro` timestamp NOT NULL DEFAULT current_timestamp(),
+  `email_responsavel` varchar(255) DEFAULT NULL,
+  `telefone_responsavel` varchar(20) DEFAULT NULL,
+  `callmebot_apikey` varchar(20) DEFAULT NULL,
+  `whatsapp_enviado` tinyint(1) DEFAULT 0,
+  `whatsapp_enviado_em` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura para tabela `log_whatsapp`
+--
+
+CREATE TABLE `log_whatsapp` (
+  `id` int(11) NOT NULL,
+  `aluno_id` int(11) NOT NULL,
+  `telefone` varchar(20) NOT NULL,
+  `mensagem` text NOT NULL,
+  `status` enum('enviado','erro','pendente') DEFAULT 'pendente',
+  `resposta_api` text DEFAULT NULL,
+  `enviado_em` datetime DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -79,11 +100,7 @@ CREATE TABLE `usuarios` (
 --
 
 INSERT INTO `usuarios` (`id`, `email`, `senha`, `nome`) VALUES
-(12345, 'victoremasoares123@gmail.com', '123456', 'victor'),
-(12346, 'victor.lima141@aluno.ce.gov.br', '$2y$10$SzEVgubFe2ksCpVy0j.2B.S/D1MD9bffP3GEPDHKgxi8zHgbDN8oS', 'VICTOR EMANUEL SOARES CAVALCANTE LIMA'),
-(12347, 'carlos.oliveira541@aluno.ce.gov.br', '$2y$10$ZwWMdbwHEqjUzSFAjTMu4ujvPyVh6gWHFhT1iwpNgcoiMgokzZ3Xa', 'Carlos Andre Cordeiro Oliveira'),
-(12348, 'victor.lima141@aluno.ce.gov.br', '$2y$10$fkhaFTcnh27YM8g8QDkB7.wcf61zbIqOH3pORJxP8p7mzS4DlENOW', 'VICTOR EMANUEL SOARES CAVALCANTE LIMA'),
-(12349, 'aaa@gmail.com', '$2y$10$NM5cp/SmPZhXRtjEvq1uJ.sZWL8.ubhkdN9w1NLo6OoKIS2lgwBz.', 'Carlos Andre Cordeiro Oliveira');
+(12358, 'rafael2@gmail.com', '$2y$10$heGMT3cbJBvMkItx1MsNaOWKCEKOElO73XjBzwo1v2yx8hmldM5BK', 'Rafael');
 
 --
 -- Índices para tabelas despejadas
@@ -97,6 +114,13 @@ ALTER TABLE `alunos`
   ADD UNIQUE KEY `cpf` (`cpf`);
 
 --
+-- Índices de tabela `log_whatsapp`
+--
+ALTER TABLE `log_whatsapp`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `aluno_id` (`aluno_id`);
+
+--
 -- Índices de tabela `notas_detalhadas`
 --
 ALTER TABLE `notas_detalhadas`
@@ -107,7 +131,8 @@ ALTER TABLE `notas_detalhadas`
 -- Índices de tabela `usuarios`
 --
 ALTER TABLE `usuarios`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uq_usuarios_email` (`email`);
 
 --
 -- AUTO_INCREMENT para tabelas despejadas
@@ -117,7 +142,13 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT de tabela `alunos`
 --
 ALTER TABLE `alunos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT de tabela `log_whatsapp`
+--
+ALTER TABLE `log_whatsapp`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de tabela `notas_detalhadas`
@@ -129,11 +160,17 @@ ALTER TABLE `notas_detalhadas`
 -- AUTO_INCREMENT de tabela `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12350;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12359;
 
 --
 -- Restrições para tabelas despejadas
 --
+
+--
+-- Restrições para tabelas `log_whatsapp`
+--
+ALTER TABLE `log_whatsapp`
+  ADD CONSTRAINT `fk_log_aluno` FOREIGN KEY (`aluno_id`) REFERENCES `alunos` (`id`) ON DELETE CASCADE;
 
 --
 -- Restrições para tabelas `notas_detalhadas`
