@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Acesso — EEEP Manoel Mano</title>
+  <link rel="stylesheet" href="style.css">
+
+  <!-- Toastify.js — notificações elegantes e sem dependências -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+  <style>
+    /* ── Customização Toastify para o design system do projeto ── */
+    .toastify {
+      font-family: 'Instrument Sans', system-ui, sans-serif !important;
+      font-size: 0.82rem !important;
+      font-weight: 600 !important;
+      border-radius: 8px !important;
+      padding: 12px 18px 12px 14px !important;
+      box-shadow: 0 8px 28px rgba(0,0,0,.25) !important;
+      display: flex !important;
+      align-items: center !important;
+      gap: 10px !important;
+      min-width: 260px !important;
+      max-width: 380px !important;
+      letter-spacing: .01em !important;
+      color: #fff !important;
+    }
+    .toast-error   { background: #0c0f0c !important; border-left: 3px solid #dc2626 !important; }
+    .toast-success { background: #0c0f0c !important; border-left: 3px solid #00a86b !important; }
+    .toast-warning { background: #0c0f0c !important; border-left: 3px solid #e8a020 !important; }
+    .toast-info    { background: #0c0f0c !important; border-left: 3px solid #2563eb !important; }
+
+    .toast-error::before   { content: '✕'; color: #dc2626; font-size: .9rem; flex-shrink: 0; }
+    .toast-success::before { content: '✓'; color: #00a86b; font-size: .9rem; flex-shrink: 0; }
+    .toast-warning::before { content: '⚠'; color: #e8a020; font-size: .85rem; flex-shrink: 0; }
+    .toast-info::before    { content: 'ℹ'; color: #2563eb; font-size: .85rem; flex-shrink: 0; }
+
+    @keyframes toastSlideIn {
+      from { opacity: 0; transform: translateY(-14px) scale(.95); }
+      to   { opacity: 1; transform: translateY(0)    scale(1);    }
+    }
+    .toastify { animation: toastSlideIn .3s cubic-bezier(.34,1.56,.64,1) both !important; }
+  </style>
+</head>
+<body>
+<main class="main-container">
+
+  <!-- ── Lado esquerdo ── -->
+  <section class="welcome-section">
+    <div class="divider-line"></div>
+
+    <div class="logo">
+      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJgsXhRW5qdtpDbZWZmmPzg9njNJXOGcYLpQ&s" alt="Logo EEEP Manoel Mano">
+    </div>
+
+    <div class="welcome-text">
+      <h1 id="welcome-title"><em>Sistema</em><br>de Seleção<br>2027</h1>
+      <p id="welcome-subtitle">Plataforma oficial de inscrição e acompanhamento do processo seletivo da EEEP Manoel Mano.</p>
+    </div>
+
+    <div class="login-year-badge">2027</div>
+  </section>
+
+  <!-- ── Lado direito ── -->
+  <section class="login-section">
+
+    <!-- LOGIN -->
+    <form class="login-form" id="loginForm" action="login.php" method="POST">
+      <span class="form-eyebrow">EEEP Manoel Mano</span>
+      <h2 class="form-title" id="form-title">Entrar na conta</h2>
+
+      <div class="input-group">
+        <label for="email">E-mail</label>
+        <input type="email" id="email" name="email" placeholder="seu@email.com" required autocomplete="email">
+      </div>
+      <div class="input-group">
+        <label for="senha">Senha</label>
+        <input type="password" id="senha" name="senha" placeholder="••••••••" required autocomplete="current-password">
+      </div>
+
+      <button type="submit" class="btn-entrar">Entrar</button>
+      <p class="toggle-form-text">Não tem uma conta? <a href="#" id="linkCadastro">Cadastre-se</a></p>
+    </form>
+
+    <!-- CADASTRO -->
+    <form class="login-form" id="registerForm" action="cadastrar.php" method="POST" style="display:none;">
+      <span class="form-eyebrow">EEEP Manoel Mano</span>
+      <h2 class="form-title">Criar conta</h2>
+
+      <div class="input-group">
+        <label for="nome_cadastro">Nome completo</label>
+        <input type="text" id="nome_cadastro" name="nome" placeholder="Seu nome completo" required>
+      </div>
+      <div class="input-group">
+        <label for="email_cadastro">E-mail</label>
+        <input type="email" id="email_cadastro" name="email" placeholder="seu@email.com" required>
+      </div>
+      <div class="input-group">
+        <label for="senha_cadastro">Senha</label>
+        <input type="password" id="senha_cadastro" name="senha" placeholder="Mínimo 6 caracteres" required>
+      </div>
+      <div class="input-group">
+        <label for="confirma_senha">Confirmar senha</label>
+        <input type="password" id="confirma_senha" name="confirma_senha" placeholder="Repita a senha" required>
+      </div>
+
+      <button type="submit" class="btn-entrar">Criar conta</button>
+      <p class="toggle-form-text">Já tem uma conta? <a href="#" id="linkLogin">Entrar</a></p>
+    </form>
+
+    <footer class="footer-links">
+      <a href="privacidade.html">Privacidade</a> &middot; <a href="termos.html">Termos</a>
+    </footer>
+  </section>
+</main>
+
+<script>
+  // ══════════════════════════════════════════════════════
+  //  showToast — função central de notificações
+  //  type: 'error' | 'success' | 'warning' | 'info'
+  // ══════════════════════════════════════════════════════
+  function showToast(message, type) {
+    type = type || 'error';
+    Toastify({
+      text: message,
+      duration: 4500,
+      gravity: 'top',
+      position: 'center',
+      stopOnFocus: true,
+      className: 'toast-' + type,
+      onClick: function() { this.hideToast && this.hideToast(); }
+    }).showToast();
+  }
+
+  // ── Alterna entre os formulários ──
+  document.getElementById('linkCadastro').addEventListener('click', function(e) {
+    e.preventDefault();
+    document.getElementById('loginForm').style.display    = 'none';
+    document.getElementById('registerForm').style.display = 'block';
+  });
+  document.getElementById('linkLogin').addEventListener('click', function(e) {
+    e.preventDefault();
+    document.getElementById('registerForm').style.display = 'none';
+    document.getElementById('loginForm').style.display    = 'block';
+  });
+
+  // ── Validação client-side no cadastro ──
+  document.getElementById('registerForm').addEventListener('submit', function(e) {
+    var senha    = document.getElementById('senha_cadastro').value;
+    var confirma = document.getElementById('confirma_senha').value;
+
+    if (senha.length < 6) {
+      e.preventDefault();
+      showToast('A senha deve ter no mínimo 6 caracteres.', 'warning');
+      return;
+    }
+    if (senha !== confirma) {
+      e.preventDefault();
+      showToast('Senhas não coincidem. Verifique e tente novamente.', 'error');
+      var campo = document.getElementById('confirma_senha');
+      campo.style.borderColor = '#dc2626';
+      campo.focus();
+      setTimeout(function() { campo.style.borderColor = ''; }, 2800);
+    }
+  });
+
+  // Remove destaque ao redigitar a confirmação
+  document.getElementById('confirma_senha').addEventListener('input', function() {
+    this.style.borderColor = '';
+  });
+
+  // ── Notificações vindas do servidor via parâmetro URL ──
+  var erros = {
+    campos_vazios:          { msg: 'Preencha todos os campos.',               type: 'warning' },
+    senha_incorreta:        { msg: 'Email ou senha incorretos.',              type: 'error'   },
+    email_nao_encontrado:   { msg: 'E-mail não encontrado.',                  type: 'error'   },
+    email_ja_cadastrado:    { msg: 'Este e-mail já está cadastrado.',         type: 'warning' },
+    senhas_nao_coincidem:   { msg: 'Senhas não coincidem.',                   type: 'error'   },
+    senha_curta:            { msg: 'A senha deve ter no mínimo 6 caracteres.', type: 'warning' },
+    email_invalido:         { msg: 'E-mail inválido. Verifique e tente novamente.', type: 'warning' },
+    acesso_negado:          { msg: 'Faça login para acessar essa página.',    type: 'warning' },
+    erro_interno:           { msg: 'Erro interno. Tente novamente.',          type: 'error'   }
+  };
+
+  var params   = new URLSearchParams(window.location.search);
+  var erroKey  = params.get('erro');
+  var msgKey   = params.get('msg');
+
+  if (erroKey && erros[erroKey]) {
+    showToast(erros[erroKey].msg, erros[erroKey].type);
+  }
+
+  // Mensagens de sucesso (logout, cadastro criado, etc.)
+  if (msgKey === 'logout_ok')    showToast('Sessão encerrada com sucesso.',         'success');
+  if (msgKey === 'cadastro_ok')  showToast('Conta criada! Faça login para continuar.', 'success');
+
+  // Limpa a URL sem recarregar a página
+  if (erroKey || msgKey) {
+    history.replaceState(null, '', window.location.pathname);
+  }
+</script>
+</body>
+</html>
