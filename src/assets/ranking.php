@@ -505,10 +505,8 @@ body {
 })();
 
 function gerarPDF() {
-    document.getElementById('sidebar-lateral').classList.remove('aberta');
-    document.getElementById('overlay-menu').classList.remove('aberto');
-    document.getElementById('btn-hamburguer').classList.remove('aberto');
-    setTimeout(() => window.print(), 120);
+    const curso = document.getElementById('select-curso').value;
+    window.location.href = 'gerar_pdf_ranking.php?curso=' + encodeURIComponent(curso);
 }
 </script>
 </body>
