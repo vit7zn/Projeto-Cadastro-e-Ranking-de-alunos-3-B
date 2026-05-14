@@ -284,7 +284,7 @@ body {
         <button class="btn-hamburguer" id="btn-hamburguer" aria-label="Menu">
             <span></span><span></span><span></span>
         </button>
-        <a class="navbar-brand" href="index.HTML">
+        <a class="navbar-brand" >
             <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJgsXhRW5qdtpDbZWZmmPzg9njNJXOGcYLpQ&s" alt="Logo">
             EEEP Manoel Mano
         </a>
