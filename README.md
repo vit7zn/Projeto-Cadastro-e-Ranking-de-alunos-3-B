@@ -22,3 +22,40 @@ Abaixo está a organização das principais pastas e arquivos do repositório:
 │   │   └── style.css         # Estilização visual do projeto
 │   └── sistema_login.sql     # Estrutura do banco de dados (tabelas e usuários)
 └── README.md                 # Documentação do projeto
+
+## 🛠️ Tecnologias Utilizadas
+
+- **Frontend:** HTML5, CSS3, JavaScript / React (\`.jsx\`)
+- **Backend:** PHP
+- **Banco de Dados:** MySQL / MariaDB (\`.sql\`)
+- **Integrações:** API da OpenAI (para a lógica de OCR e diagnóstico)
+
+## 🔧 Como Executar o Projeto Localmente
+
+### Pré-requisitos
+Para rodar o ambiente de desenvolvimento, você precisará de:
+1. Um servidor local Apache com PHP e MySQL instalado (Recomendado: **XAMPP** ou **WampServer**).
+2. Um navegador web atualizado.
+
+### Passo a Passo
+
+1. **Clonar o Repositório:**
+   Coloque os arquivos do projeto dentro da pasta pública do seu servidor local (ex: \`C:/xampp/htdocs/projeto_cadastro\`).
+   \`\`\`bash
+   git clone https://github.com/vit7zn/Projeto-Cadastro-e-Ranking-de-alunos-3-B.git
+   \`\`\`
+
+2. **Configurar o Banco de Dados:**
+   - Abra o \`phpMyAdmin\` (geralmente em \`http://localhost/phpmyadmin\`).
+   - Crie um novo banco de dados.
+   - Importe o arquivo \`src/sistema_login.sql\` para criar as tabelas necessárias.
+
+3. **Configurar as Chaves de API:**
+   - Caso utilize as funções de OCR, configure suas credenciais de ambiente nos arquivos proxy PHP correspondentes.
+
+4. **Acessar o Sistema:**
+   - Inicie os módulos Apache e MySQL no painel do XAMPP.
+   - Abra o navegador e acesse: \`http://localhost/projeto_cadastro/src/assets/cadastro.html\`.
+
+---
+Feito por [vit7zn](https://github.com/vit7zn). 😊
