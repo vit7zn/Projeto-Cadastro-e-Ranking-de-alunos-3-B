@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastro de Estudante - EEEP Manoel Mano</title>
     <link rel="stylesheet" href="style.css">
+    <!-- PDF.js — converte PDF em imagem no navegador, sem precisar de Ghostscript no servidor -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 </head>
 <body>
 
@@ -233,6 +235,13 @@
                                 <td><input type="number" step="0.01" min="0" max="10" class="input-nota" name="nota[edfisica][8]" placeholder="—"></td>
                                 <td><input type="number" step="0.01" min="0" max="10" class="input-nota" name="nota[edfisica][9]" placeholder="—"></td>
                             </tr>
+                            <tr>
+                                <td>Ens. Religioso</td>
+                                <td><input type="number" step="0.01" min="0" max="10" class="input-nota" name="nota[religiao][6]" placeholder="—"></td>
+                                <td><input type="number" step="0.01" min="0" max="10" class="input-nota" name="nota[religiao][7]" placeholder="—"></td>
+                                <td><input type="number" step="0.01" min="0" max="10" class="input-nota" name="nota[religiao][8]" placeholder="—"></td>
+                                <td><input type="number" step="0.01" min="0" max="10" class="input-nota" name="nota[religiao][9]" placeholder="—"></td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -257,7 +266,7 @@
                     <div style="background:linear-gradient(135deg,#0e5200,#1b8a00);padding:18px 24px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
                         <div>
                             <div style="font-size:1.05rem;font-weight:800;color:#fff;">📷 OCR de Notas com IA</div>
-                            <div style="color:rgba(255,255,255,.65);font-size:.78rem;margin-top:3px;">Adicione um boletim por ano letivo — a IA lê e preenche automaticamente</div>
+                            <div style="color:rgba(255,255,255,.65);font-size:.78rem;margin-top:3px;">Envie uma foto do boletim — a IA detecta o ano e preenche automaticamente</div>
                         </div>
                         <button type="button" id="btn-fechar-ocr" style="background:rgba(255,255,255,.15);border:none;color:#fff;font-size:1.2rem;width:34px;height:34px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;">✕</button>
                     </div>
@@ -396,30 +405,28 @@
     });
 
     // ══════════════════════════════════════════
-    //  OCR MODAL — múltiplos boletins + exclusão
+    //  OCR MODAL — slot único (a IA detecta o ano)
     // ══════════════════════════════════════════
     (function () {
 
-        // Estado por slot (um slot = um ano letivo)
-        const ANOS = ['6º Ano', '7º Ano', '8º Ano', '9º Ano'];
-        const DISCIPLINAS = ['portugues','matematica','ciencias','historia','geografia','artes','ingles','edfisica'];
-        const DISC_LABELS  = ['Português','Matemática','Ciências','História','Geografia','Artes','Inglês','Ed. Física'];
+        const DISCIPLINAS        = ['portugues','matematica','ciencias','historia','geografia','artes','ingles','espanhol','edfisica','religiao','filosofia'];
+        const DISC_LABELS        = ['Português','Matemática','Ciências','História','Geografia','Artes','Inglês','Espanhol','Ed. Física','Ens. Religioso','Filosofia'];
+        const DISCIPLINAS_TABELA = ['portugues','matematica','ciencias','historia','geografia','artes','ingles','edfisica','religiao'];
 
-        // CAMPOS_ORDEM e LABELS para aplicar na tabela (vertical: ano a ano)
-        const CAMPOS_ORDEM = [];
+        const CAMPOS_ORDEM  = [];
         const LABELS_CAMPOS = [];
         [6,7,8,9].forEach(ano => {
-            DISCIPLINAS.forEach((d, di) => {
+            DISCIPLINAS_TABELA.forEach(d => {
+                const di = DISCIPLINAS.indexOf(d);
                 CAMPOS_ORDEM.push(`nota[${d}][${ano}]`);
                 LABELS_CAMPOS.push(`${DISC_LABELS[di]} ${ano}º`);
             });
         });
 
-        // slots[i] = { base64, tipo, notas: [] | null }
-        const slots = ANOS.map(() => ({ base64: null, tipo: 'image/jpeg', notas: null }));
-
-        // notasFinais[i] = número consolidado para o CAMPOS_ORDEM[i], ou null se excluído
-        let notasFinais = new Array(CAMPOS_ORDEM.length).fill(null);
+        let slot             = { base64: null, tipo: 'image/jpeg' };
+        let discReconhecidas = {};
+        let anoDetectado     = null;
+        let notasFinais      = new Array(CAMPOS_ORDEM.length).fill(null);
 
         const overlay   = document.getElementById('ocr-overlay');
         const btnAbrir  = document.getElementById('btn-abrir-ocr');
@@ -432,95 +439,126 @@
         const aviso     = document.getElementById('ocr-aviso');
         const resultado = document.getElementById('ocr-resultado');
 
-        btnAbrir.addEventListener('click',  () => { overlay.classList.add('aberto'); renderSlots(); });
+        btnAbrir.addEventListener('click',  () => { overlay.classList.add('aberto'); renderSlot(); });
         btnFechar.addEventListener('click', fechar);
         overlay.addEventListener('click',  e => { if (e.target === overlay) fechar(); });
         function fechar() { overlay.classList.remove('aberto'); }
 
-        // ── Renderiza os 4 slots de upload ──
-        function renderSlots() {
-            const container = document.getElementById('ocr-slots');
-            container.innerHTML = '';
-            ANOS.forEach((label, i) => {
-                const slot = slots[i];
-                const temArquivo = !!slot.base64;
-                const temNotas   = slot.notas !== null;
+        // ── Renderiza o único slot de upload ──
+        function renderSlot() {
+            const container  = document.getElementById('ocr-slots');
+            const temArquivo = !!slot.base64;
 
-                const div = document.createElement('div');
-                div.style.cssText = 'display:flex;align-items:center;gap:12px;background:#f9fdf9;border:1.5px solid #d4e8d0;border-radius:12px;padding:12px 14px;';
-
-                // Badge do ano
-                div.innerHTML = `
-                    <div style="font-weight:800;font-size:.85rem;color:#0e5200;background:#d4f0c8;border-radius:8px;padding:5px 10px;min-width:56px;text-align:center;flex-shrink:0;">${label}</div>
-
-                    <!-- zona de upload clicável -->
-                    <div class="slot-zone" data-slot="${i}"
-                         style="flex:1;position:relative;border:2px dashed ${temArquivo ? '#1b8a00' : '#b2d8b0'};border-radius:10px;padding:10px 14px;cursor:pointer;background:${temArquivo ? '#f0fbf0' : '#fff'};transition:.2s;">
-                        <input type="file" class="slot-file" data-slot="${i}" accept="image/*,application/pdf"
+            container.innerHTML = `
+                <div style="background:#f9fdf9;border:1.5px solid #d4e8d0;border-radius:12px;padding:14px;">
+                    <div style="position:relative;border:2px dashed ${temArquivo ? '#1b8a00' : '#b2d8b0'};
+                                border-radius:10px;padding:20px;cursor:pointer;
+                                background:${temArquivo ? '#f0fbf0' : '#fff'};
+                                text-align:center;transition:.2s;">
+                        <input type="file" id="slot-file-input" accept="image/*,application/pdf"
                                style="position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;">
-                        <div style="font-size:.85rem;font-weight:700;color:${temArquivo ? '#1b8a00' : '#6b8268'};">
-                            ${temArquivo ? '✅ Boletim carregado' : '📎 Clique ou arraste o boletim'}
+                        <div style="font-size:2.2rem;margin-bottom:6px;">${temArquivo ? '✅' : '📎'}</div>
+                        <div style="font-size:.9rem;font-weight:700;color:${temArquivo ? '#1b8a00' : '#6b8268'};">
+                            ${temArquivo ? 'Boletim carregado — clique para trocar' : 'Clique ou arraste o boletim aqui'}
                         </div>
-                        ${temNotas
-                            ? `<div style="font-size:.72rem;color:#1b8a00;margin-top:2px;">🔢 ${slot.notas.length} nota${slot.notas.length!==1?'s':''} lida${slot.notas.length!==1?'s':''}</div>`
-                            : `<div style="font-size:.72rem;color:#6b8268;margin-top:2px;">JPG, PNG, WEBP ou PDF</div>`
-                        }
+                        <div style="font-size:.75rem;color:#888;margin-top:5px;">
+                            ${temArquivo && anoDetectado
+                                ? `🏫 Ano mais recente: <strong style="color:#0e5200">${anoDetectado}º ano</strong>`
+                                : 'JPG, PNG, WEBP ou PDF — histórico completo ou boletim de um único ano'}
+                        </div>
                     </div>
+                    ${temArquivo ? `
+                    <div style="display:flex;justify-content:flex-end;margin-top:10px;">
+                        <button type="button" id="slot-remover"
+                            style="background:#fff0f0;border:1.5px solid #ffcdd2;color:#c62828;
+                                   border-radius:8px;padding:6px 14px;cursor:pointer;font-size:.8rem;font-weight:700;">
+                            ✕ Remover arquivo
+                        </button>
+                    </div>` : ''}
+                </div>
+            `;
 
-                    <!-- botão remover slot -->
-                    ${temArquivo ? `<button type="button" class="slot-remover" data-slot="${i}"
-                        style="background:#fff0f0;border:1.5px solid #ffcdd2;color:#c62828;border-radius:8px;padding:7px 10px;cursor:pointer;font-size:.8rem;font-weight:700;flex-shrink:0;">✕</button>` : ''}
-                `;
-                container.appendChild(div);
+            document.getElementById('slot-file-input').addEventListener('change', e => {
+                if (e.target.files[0]) carregarArquivo(e.target.files[0]);
             });
 
-            // Eventos dos inputs de arquivo
-            container.querySelectorAll('.slot-file').forEach(input => {
-                input.addEventListener('change', () => {
-                    if (input.files[0]) carregarArquivoSlot(parseInt(input.dataset.slot), input.files[0]);
+            const btnRem = document.getElementById('slot-remover');
+            if (btnRem) {
+                btnRem.addEventListener('click', () => {
+                    slot = { base64: null, tipo: 'image/jpeg' };
+                    discReconhecidas = {}; anoDetectado = null;
+                    notasFinais = new Array(CAMPOS_ORDEM.length).fill(null);
+                    renderSlot(); atualizarBotaoAnalisar(); esconderResultado();
                 });
-            });
+            }
 
-            // Eventos dos botões remover
-            container.querySelectorAll('.slot-remover').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const i = parseInt(btn.dataset.slot);
-                    slots[i] = { base64: null, tipo: 'image/jpeg', notas: null };
-                    renderSlots();
-                    atualizarBotaoAnalisar();
-                    esconderResultado();
-                });
-            });
-
-            // Hover nos slots
-            container.querySelectorAll('.slot-zone').forEach(z => {
-                z.addEventListener('mouseover', () => { z.style.borderColor='#1b8a00'; z.style.background='#f0fbf0'; });
-                z.addEventListener('mouseout',  () => {
-                    const i = parseInt(z.dataset.slot);
-                    z.style.borderColor = slots[i].base64 ? '#1b8a00' : '#b2d8b0';
-                    z.style.background  = slots[i].base64 ? '#f0fbf0' : '#fff';
-                });
-            });
+            atualizarBotaoAnalisar();
         }
 
-        function carregarArquivoSlot(i, file) {
+        // ── Carrega arquivo — converte PDF em JPEG via PDF.js (todas as páginas juntas) ──
+        async function carregarArquivo(file) {
             const tipo = file.type || 'image/jpeg';
+            esconderResultado(); discReconhecidas = {}; anoDetectado = null;
+
+            if (tipo === 'application/pdf') {
+                try {
+                    const arrayBuffer = await file.arrayBuffer();
+                    if (!pdfjsLib.GlobalWorkerOptions.workerSrc) {
+                        pdfjsLib.GlobalWorkerOptions.workerSrc =
+                            'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+                    }
+                    const pdfDoc = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+                    const scale  = 2.0;
+
+                    // Renderiza todas as páginas em canvases separados
+                    const canvases = [];
+                    for (let p = 1; p <= pdfDoc.numPages; p++) {
+                        const page     = await pdfDoc.getPage(p);
+                        const viewport = page.getViewport({ scale });
+                        const cv       = document.createElement('canvas');
+                        cv.width       = viewport.width;
+                        cv.height      = viewport.height;
+                        await page.render({ canvasContext: cv.getContext('2d'), viewport }).promise;
+                        canvases.push(cv);
+                    }
+
+                    // Junta todas as páginas verticalmente num único canvas
+                    const totalWidth  = Math.max(...canvases.map(c => c.width));
+                    const totalHeight = canvases.reduce((s, c) => s + c.height, 0);
+                    const merged      = document.createElement('canvas');
+                    merged.width      = totalWidth;
+                    merged.height     = totalHeight;
+                    const ctx         = merged.getContext('2d');
+                    ctx.fillStyle     = '#ffffff';
+                    ctx.fillRect(0, 0, totalWidth, totalHeight);
+                    let offsetY = 0;
+                    for (const cv of canvases) {
+                        ctx.drawImage(cv, 0, offsetY);
+                        offsetY += cv.height;
+                    }
+
+                    slot.base64 = merged.toDataURL('image/jpeg', 0.92).split(',')[1];
+                    slot.tipo   = 'image/jpeg';
+                    renderSlot();
+                } catch (err) {
+                    aviso.textContent = '⚠️ Não foi possível ler o PDF. Tente converter para JPG/PNG.';
+                    aviso.style.display = 'block';
+                }
+                return;
+            }
+
             const reader = new FileReader();
             reader.onload = e => {
-                slots[i].base64 = e.target.result.split(',')[1];
-                slots[i].tipo   = tipo;
-                slots[i].notas  = null;
-                renderSlots();
-                atualizarBotaoAnalisar();
-                esconderResultado();
+                slot.base64 = e.target.result.split(',')[1];
+                slot.tipo   = tipo;
+                renderSlot();
             };
             reader.readAsDataURL(file);
         }
 
         function atualizarBotaoAnalisar() {
-            const temAlgum = slots.some(s => s.base64 !== null);
-            btnAnali.disabled = !temAlgum;
-            btnAnali.style.opacity = temAlgum ? '1' : '.45';
+            btnAnali.disabled      = !slot.base64;
+            btnAnali.style.opacity = slot.base64 ? '1' : '.45';
         }
 
         function esconderResultado() {
@@ -529,10 +567,9 @@
             aviso.style.display     = 'none';
         }
 
-        // ── Analisar: processa cada slot que tem arquivo ──
+        // ── Analisar: envia UMA imagem, IA retorna o ano mais recente ──
         btnAnali.addEventListener('click', async () => {
-            const slotsParaAnalisar = slots.map((s, i) => ({ ...s, idx: i })).filter(s => s.base64 !== null);
-            if (slotsParaAnalisar.length === 0) return;
+            if (!slot.base64) return;
 
             btnAnali.disabled = true; btnAnali.style.opacity = '.45';
             btnUsar.style.display = 'none';
@@ -541,59 +578,94 @@
 
             statusBox.style.cssText = 'display:flex;align-items:center;gap:12px;background:#f0f7f0;border-left:4px solid #1b8a00;border-radius:10px;padding:13px 16px;margin-top:14px;font-size:.88rem;color:#3a5c38;';
             document.getElementById('ocr-spinner').style.display = 'block';
+            statusMsg.textContent = 'Analisando boletim com IA…';
 
-            let erros = [];
-
-            for (const s of slotsParaAnalisar) {
-                statusMsg.textContent = `Lendo boletim do ${ANOS[s.idx]} com IA…`;
-                try {
-                    const resp = await fetch('ocr_proxy.php', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ imagem: s.base64, tipo: s.tipo })
-                    });
-                    const json = await resp.json();
-                    if (json.erro) {
-                        erros.push(`${ANOS[s.idx]}: ${json.erro}`);
-                        slots[s.idx].notas = [];
-                    } else if (!json.notas || json.notas.length === 0) {
-                        erros.push(`${ANOS[s.idx]}: nenhuma nota encontrada.`);
-                        slots[s.idx].notas = [];
-                    } else {
-                        slots[s.idx].notas = json.notas;
-                    }
-                } catch (err) {
-                    erros.push(`${ANOS[s.idx]}: erro de conexão.`);
-                    slots[s.idx].notas = [];
-                }
-            }
-
-            document.getElementById('ocr-spinner').style.display = 'none';
-            statusBox.style.display = 'none';
-
-            // Consolida as notas: cada slot[i] preenche as 8 disciplinas do ano i+6
-            notasFinais = new Array(CAMPOS_ORDEM.length).fill(null);
-            slots.forEach((s, anoIdx) => {
-                if (!s.notas || s.notas.length === 0) return;
-                s.notas.forEach((val, discIdx) => {
-                    if (discIdx >= DISCIPLINAS.length) return;
-                    const campoIdx = anoIdx * DISCIPLINAS.length + discIdx;
-                    notasFinais[campoIdx] = val;
+            try {
+                const resp = await fetch('ocr_proxy.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ imagem: slot.base64, tipo: slot.tipo })
                 });
-            });
 
-            renderSlots(); // atualiza badges
-            renderizarResultado();
+                document.getElementById('ocr-spinner').style.display = 'none';
+                statusBox.style.display = 'none';
 
-            btnAnali.disabled = false; btnAnali.style.opacity = '1';
+                // Tenta fazer parse do JSON — se o PHP retornou HTML de erro, mostra o texto bruto
+                const textoResposta = await resp.text();
+                let json;
+                try {
+                    json = JSON.parse(textoResposta);
+                } catch (parseErr) {
+                    // PHP retornou HTML (erro fatal, warning, etc.) — mostra diagnóstico
+                    const erroHtml = textoResposta.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 300);
+                    aviso.innerHTML = '⚠️ O servidor retornou um erro PHP:<br><code style="font-size:.75rem;background:#fff3cd;padding:4px 8px;border-radius:4px;display:block;margin-top:6px;white-space:pre-wrap;">' + erroHtml + '</code>';
+                    aviso.style.display = 'block';
+                    btnAnali.disabled = false; btnAnali.style.opacity = '1';
+                    return;
+                }
 
-            if (erros.length > 0) {
-                aviso.textContent = '⚠️ ' + erros.join(' | ');
+                if (json.erro) {
+                    aviso.textContent = '⚠️ ' + json.erro;
+                    aviso.style.display = 'block';
+                    btnAnali.disabled = false; btnAnali.style.opacity = '1';
+                    return;
+                }
+
+                // API v12 retorna: {"anos": {"ano6": {"disciplinas":{...},"notas":[...]}, "ano7":{...}}}
+                if (!json.anos || Object.keys(json.anos).length === 0) {
+                    aviso.textContent = '⚠️ Nenhuma disciplina reconhecida. Tente com imagem mais nítida.';
+                    aviso.style.display = 'block';
+                    btnAnali.disabled = false; btnAnali.style.opacity = '1';
+                    return;
+                }
+
+                // Descobre os anos presentes (chaves "ano6".."ano9") e define o mais recente para o badge
+                const anosPresentes = Object.keys(json.anos)
+                    .map(k => parseInt(k.replace('ano', '')))
+                    .filter(n => n >= 6 && n <= 9)
+                    .sort((a, b) => b - a);
+                anoDetectado = anosPresentes[0] || 9;
+
+                // Preenche notasFinais para TODOS os anos retornados
+                notasFinais = new Array(CAMPOS_ORDEM.length).fill(null);
+
+                Object.entries(json.anos).forEach(([chaveAno, dadosAno]) => {
+                    // chaveAno = "ano6", "ano7", "ano8" ou "ano9"
+                    const anoNum = parseInt(chaveAno.replace('ano', ''));
+                    if (isNaN(anoNum) || anoNum < 6 || anoNum > 9) return;
+                    const anoIdx = anoNum - 6; // ano6→0, ano7→1, ano8→2, ano9→3
+
+                    // dadosAno.disciplinas é o objeto {portugues: 8.5, matematica: 9.0, ...}
+                    const discs = dadosAno.disciplinas || {};
+
+                    DISCIPLINAS_TABELA.forEach((disc, discIdx) => {
+                        // religiao agora tem campo próprio na tabela
+                        // filosofia → preenche religiao se religiao não existir
+                        let chave = disc;
+                        if (disc === 'religiao' && discs['religiao'] === undefined && discs['filosofia'] !== undefined) {
+                            chave = 'filosofia';
+                        }
+                        const val = discs[chave];
+                        if (val === undefined || val === null) return;
+                        const campoIdx = anoIdx * DISCIPLINAS_TABELA.length + discIdx;
+                        notasFinais[campoIdx] = val;
+                    });
+                });
+
+                renderSlot();
+                renderizarResultado();
+
+            } catch (err) {
+                document.getElementById('ocr-spinner').style.display = 'none';
+                statusBox.style.display = 'none';
+                aviso.innerHTML = '⚠️ Erro ao contactar o servidor: <code style="font-size:.75rem;">' + err.message + '</code><br><small>Verifique se o XAMPP está rodando e o arquivo ocr_proxy.php está na mesma pasta.</small>';
                 aviso.style.display = 'block';
             }
+
+            btnAnali.disabled = false; btnAnali.style.opacity = '1';
         });
 
-        // ── Renderiza a lista consolidada com botão ✕ por nota ──
+        // ── Lista de notas com exclusão individual ──
         function renderizarResultado() {
             const lista = document.getElementById('ocr-lista-notas');
             lista.innerHTML = '';
@@ -601,40 +673,50 @@
             const ativas = notasFinais.filter(n => n !== null);
             if (ativas.length === 0) {
                 resultado.style.display = 'none';
-                btnUsar.style.display = 'none';
+                btnUsar.style.display   = 'none';
                 return;
             }
 
+            // Calcula quais anos têm notas para exibir no cabeçalho
+            const anosComNotas = [];
+            [6,7,8,9].forEach(ano => {
+                const anoIdx = ano - 6;
+                const temNota = DISCIPLINAS_TABELA.some((_, di) => notasFinais[anoIdx * DISCIPLINAS_TABELA.length + di] !== null);
+                if (temNota) anosComNotas.push(ano + 'º');
+            });
+            const totalNotas = notasFinais.filter(n => n !== null).length;
+            const anosLabel = anosComNotas.length > 0 ? anosComNotas.join(', ') : 'ano detectado';
+
+            const cabec = document.createElement('div');
+            cabec.style.cssText = 'font-size:.8rem;color:#555;margin-bottom:10px;padding:8px 12px;background:#e8f5e9;border-radius:8px;border-left:3px solid #1b8a00;';
+            cabec.innerHTML = `🏫 <strong>${totalNotas} notas</strong> lidas dos anos: <strong>${anosLabel}</strong> — confira e clique em <strong>"Preencher automaticamente"</strong>`;
+            lista.appendChild(cabec);
+
             notasFinais.forEach((val, i) => {
-                if (val === null) return; // excluída ou vazia
+                if (val === null) return;
                 const label = LABELS_CAMPOS[i];
                 const cor   = val >= 7 ? '#1b5e20' : val >= 5 ? '#e65100' : '#b71c1c';
-
-                const card = document.createElement('div');
+                const card  = document.createElement('div');
                 card.className = 'nota-card';
                 card.id = `nota-card-${i}`;
                 card.innerHTML = `
                     <span class="nota-num" style="color:${cor};">${val.toFixed(2)}</span>
                     <span class="nota-pos" style="flex:1;padding:0 10px;">→ ${label}</span>
                     <button type="button" class="nota-excluir" data-idx="${i}"
-                        title="Excluir esta nota"
                         style="background:#fff0f0;border:1.5px solid #ffcdd2;color:#c62828;border-radius:6px;padding:3px 8px;cursor:pointer;font-size:.75rem;font-weight:700;flex-shrink:0;">✕</button>`;
                 lista.appendChild(card);
             });
 
-            // Botões de exclusão individual
             lista.querySelectorAll('.nota-excluir').forEach(btn => {
                 btn.addEventListener('click', () => {
-                    const idx = parseInt(btn.dataset.idx);
-                    notasFinais[idx] = null;
+                    notasFinais[parseInt(btn.dataset.idx)] = null;
                     renderizarResultado();
                 });
             });
 
             const totalAtivas = notasFinais.filter(n => n !== null).length;
-            const soma = notasFinais.filter(n => n !== null).reduce((a, b) => a + b, 0);
+            const soma  = notasFinais.filter(n => n !== null).reduce((a, b) => a + b, 0);
             const media = totalAtivas > 0 ? soma / totalAtivas : 0;
-
             document.getElementById('ocr-resumo').textContent =
                 `${totalAtivas} nota${totalAtivas !== 1 ? 's' : ''} · Média: ${media.toFixed(5)}`;
 
@@ -659,31 +741,12 @@
 
         // ── Limpar tudo ──
         btnLimpar.addEventListener('click', () => {
-            slots.forEach((s, i) => { slots[i] = { base64: null, tipo: 'image/jpeg', notas: null }; });
+            slot = { base64: null, tipo: 'image/jpeg' };
+            discReconhecidas = {}; anoDetectado = null;
             notasFinais = new Array(CAMPOS_ORDEM.length).fill(null);
-            renderSlots();
-            atualizarBotaoAnalisar();
-            esconderResultado();
+            renderSlot(); esconderResultado();
             statusBox.style.display = 'none';
         });
-
-        // ── Mensagens de erro quota ──
-        function mostrarErroQuota(msg, segundos) {
-            let restante = segundos;
-            statusBox.style.cssText = 'display:flex;flex-direction:column;gap:8px;background:#fff8e1;border-left:4px solid #f59e0b;border-radius:10px;padding:14px 16px;margin-top:14px;font-size:.88rem;color:#92400e;';
-            statusMsg.innerHTML = `⏳ ${msg} Tente novamente em <strong id="quota-count">${restante}s</strong>`;
-            btnAnali.disabled = true; btnAnali.style.opacity = '.45';
-            const iv = setInterval(() => {
-                restante--;
-                const el = document.getElementById('quota-count');
-                if (el) el.textContent = restante + 's';
-                if (restante <= 0) {
-                    clearInterval(iv);
-                    statusMsg.innerHTML = '✅ Pronto! Clique em <strong>Analisar</strong> para tentar novamente.';
-                    btnAnali.disabled = false; btnAnali.style.opacity = '1';
-                }
-            }, 1000);
-        }
 
     })();
     </script>
