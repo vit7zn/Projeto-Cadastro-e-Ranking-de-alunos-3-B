@@ -1,63 +1,85 @@
 <?php
-// 1. Ativar exibição de erros (Debug)
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+// ══════════════════════════════════════════════════════════════
+//  cadastrar.php — Cadastro de usuários do sistema
+//  Correções: email duplicado, redirects com toast, sem die()
+// ══════════════════════════════════════════════════════════════
 
-// 2. Configurações de Conexão
-$host = "localhost";
-$user = "root";
-$pass = ""; 
-$dbname = "sistema_login"; 
+$host   = "localhost";
+$user   = "root";
+$pass   = "";
+$dbname = "sistema_login";
 
 $conn = new mysqli($host, $user, $pass, $dbname);
-
 if ($conn->connect_error) {
-    die("Falha na conexão: " . $conn->connect_error);
+    header("Location: index.HTML?erro=erro_interno");
+    exit();
 }
 
-// 3. Verificar se os dados foram enviados via POST
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    
-    $nome           = $_POST['nome'] ?? '';
-    $email          = $_POST['email'] ?? '';
-    $senha          = $_POST['senha'] ?? '';
-    $confirma_senha = $_POST['confirma_senha'] ?? '';
+if ($_SERVER["REQUEST_METHOD"] !== "POST") {
+    header("Location: index.HTML");
+    exit();
+}
 
-    // 4. Validações básicas de segurança
-    if (empty($nome) || empty($email) || empty($senha)) {
-        die("Por favor, preencha todos os campos.");
-    }
+$nome           = trim($_POST['nome']           ?? '');
+$email          = trim($_POST['email']          ?? '');
+$senha          = $_POST['senha']               ?? '';
+$confirma_senha = $_POST['confirma_senha']      ?? '';
 
-    if ($senha !== $confirma_senha) {
-        die("As senhas não coincidem! Volte e tente novamente.");
-    }
+// ── Validações básicas ──
+if (empty($nome) || empty($email) || empty($senha)) {
+    header("Location: index.HTML?erro=campos_vazios");
+    exit();
+}
 
-    // 5. Criptografar a senha
-    $senha_segura = password_hash($senha, PASSWORD_DEFAULT);
+if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    header("Location: index.HTML?erro=email_invalido");
+    exit();
+}
 
-    // 6. Preparar o comando SQL
-    $sql = "INSERT INTO usuarios (nome, email, senha) VALUES (?, ?, ?)";
-    $stmt = $conn->prepare($sql);
+if ($senha !== $confirma_senha) {
+    header("Location: index.HTML?erro=senhas_nao_coincidem");
+    exit();
+}
 
-    if (!$stmt) {
-        die("Erro na preparação do SQL: " . $conn->error);
-    }
+if (strlen($senha) < 6) {
+    header("Location: index.HTML?erro=senha_curta");
+    exit();
+}
 
-    // 7. Vincular os parâmetros e executar
-    $stmt->bind_param("sss", $nome, $email, $senha_segura);
+// ── Verifica se email já está cadastrado ──
+$stmtCheck = $conn->prepare("SELECT id FROM usuarios WHERE email = ? LIMIT 1");
+$stmtCheck->bind_param("s", $email);
+$stmtCheck->execute();
+$stmtCheck->store_result();
 
-    if ($stmt->execute()) {
-        echo "<script>
-                alert('Usuário $nome cadastrado com sucesso! Faça seu login.');
-                window.location.href='index.html';
-              </script>";
-    } else {
-        echo "Erro ao salvar no banco de dados: " . $stmt->error;
-    }
+if ($stmtCheck->num_rows > 0) {
+    $stmtCheck->close();
+    $conn->close();
+    header("Location: index.HTML?erro=email_ja_cadastrado");
+    exit();
+}
+$stmtCheck->close();
 
+// ── Insere novo usuário ──
+$senha_segura = password_hash($senha, PASSWORD_DEFAULT);
+$stmt = $conn->prepare("INSERT INTO usuarios (nome, email, senha) VALUES (?, ?, ?)");
+
+if (!$stmt) {
+    header("Location: index.HTML?erro=erro_interno");
+    exit();
+}
+
+$stmt->bind_param("sss", $nome, $email, $senha_segura);
+
+if ($stmt->execute()) {
     $stmt->close();
+    $conn->close();
+    header("Location: index.HTML?msg=cadastro_ok");
+    exit();
+} else {
+    $stmt->close();
+    $conn->close();
+    header("Location: index.HTML?erro=erro_interno");
+    exit();
 }
-
-$conn->close();
 ?>

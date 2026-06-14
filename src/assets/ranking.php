@@ -1,4 +1,12 @@
 <?php
+session_start();
+
+// ── Guard de sessão: redireciona para login se não autenticado ──
+if (!isset($_SESSION['usuario_id'])) {
+    header("Location: index.HTML?erro=acesso_negado");
+    exit();
+}
+
 $host   = "localhost";
 $user   = "root";
 $pass   = ""; 
@@ -265,10 +273,10 @@ body {
 
 <nav id="sidebar-lateral">
     <a href="dashboard.php">📊 Painel</a>
-    <a href="cadastro.html">📋 Cadastro</a>
+    <a href="cadastro.php">📋 Cadastro</a>
     <a href="ranking.php" class="active-link">🏆 Ranking</a>
-    <a href="index.HTML">🚪 Sair</a>
-    <div class="sidebar-footer">EEEP Manoel Mano © 2026</div>
+    <a href="logout.php">🚪 Sair</a>
+    <div class="sidebar-footer">EEEP Manoel Mano © 2027</div>
 </nav>
 
 <header class="navbar">
@@ -276,7 +284,7 @@ body {
         <button class="btn-hamburguer" id="btn-hamburguer" aria-label="Menu">
             <span></span><span></span><span></span>
         </button>
-        <a class="navbar-brand" href="index.HTML">
+        <a class="navbar-brand" >
             <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJgsXhRW5qdtpDbZWZmmPzg9njNJXOGcYLpQ&s" alt="Logo">
             EEEP Manoel Mano
         </a>
@@ -285,7 +293,7 @@ body {
       <a href="dashboard.php" class="nav-card">
         <span class="nav-card-icon">📊</span><span>Painel</span>
       </a>
-      <a href="cadastro.html" class="nav-card">
+      <a href="cadastro.php" class="nav-card">
         <span class="nav-card-icon">📋</span><span>Cadastro</span>
       </a>
       <a href="ranking.php" class="nav-card active">
@@ -293,7 +301,7 @@ body {
       </a>
     </div>
     <div class="navbar-right">
-        <a href="index.HTML" class="btn-sair">Sair</a>
+        <a href="logout.php" class="btn-sair">Sair</a>
     </div>
 </header>
 
@@ -323,7 +331,7 @@ body {
             <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJgsXhRW5qdtpDbZWZmmPzg9njNJXOGcYLpQ&s" alt="Logo">
         </div>
         <div class="doc-header-text">
-            <div class="line1">Processo Seletivo – EEEP Manoel Mano 2026</div>
+            <div class="line1">Processo Seletivo – EEEP Manoel Mano 2027</div>
             <div class="line2">RESULTADO PRELIMINAR – <?= htmlspecialchars($cursoLabel) ?></div>
         </div>
         <div class="doc-header-right">
@@ -497,10 +505,8 @@ body {
 })();
 
 function gerarPDF() {
-    document.getElementById('sidebar-lateral').classList.remove('aberta');
-    document.getElementById('overlay-menu').classList.remove('aberto');
-    document.getElementById('btn-hamburguer').classList.remove('aberto');
-    setTimeout(() => window.print(), 120);
+    const curso = document.getElementById('select-curso').value;
+    window.location.href = 'gerar_pdf_ranking.php?curso=' + encodeURIComponent(curso);
 }
 </script>
 </body>

@@ -6,8 +6,12 @@
 // ══════════════════════════════════════════════════════════════════
 
 session_start();
-// Descomente para proteger com login:
-// if (!isset($_SESSION['usuario_id'])) { header("Location: index.HTML"); exit(); }
+
+// ── Guard de sessão: redireciona para login se não autenticado ──
+if (!isset($_SESSION['usuario_id'])) {
+    header("Location: index.HTML?erro=acesso_negado");
+    exit();
+}
 
 require_once 'enviar_whatsapp.php';
 
@@ -245,10 +249,10 @@ if ($rc) while ($r = $rc->fetch_assoc()) $cursos[] = $r['curso'];
 <!-- SIDEBAR LATERAL -->
 <nav id="sidebar-lateral">
     <a href="dashboard.php">📊 Painel</a>
-    <a href="cadastro.html">📋 Cadastro</a>
+    <a href="cadastro.php">📋 Cadastro</a>
     <a href="ranking.php">🏆 Ranking</a>
     <a href="disparar_resultado.php" class="active-link">📲 WhatsApp</a>
-    <a href="index.HTML">🚪 Sair</a>
+    <a href="logout.php">🚪 Sair</a>
     <div class="sidebar-footer">EEEP Manoel Mano © 2026</div>
 </nav>
 
@@ -266,7 +270,7 @@ if ($rc) while ($r = $rc->fetch_assoc()) $cursos[] = $r['curso'];
         <a href="dashboard.php" class="nav-card">
           <span class="nav-card-icon">📊</span><span>Painel</span>
         </a>
-        <a href="cadastro.html" class="nav-card">
+        <a href="cadastro.php" class="nav-card">
           <span class="nav-card-icon">📋</span><span>Cadastro</span>
         </a>
         <a href="ranking.php" class="nav-card">
@@ -277,7 +281,7 @@ if ($rc) while ($r = $rc->fetch_assoc()) $cursos[] = $r['curso'];
         </a>
     </nav>
     <div class="navbar-right">
-        <a href="index.HTML" class="btn-sair">Sair</a>
+        <a href="logout.php" class="btn-sair">Sair</a>
     </div>
 </header>
 

@@ -1,4 +1,13 @@
 <!DOCTYPE html>
+<?php
+session_start();
+// ── Guard de sessão no servidor — sem depender de JS ──
+if (!isset($_SESSION['usuario_id'])) {
+    header("Location: index.HTML?erro=acesso_negado");
+    exit();
+}
+$nomeUsuario = htmlspecialchars($_SESSION['nome'] ?? 'Usuário');
+?>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
@@ -16,9 +25,9 @@
     <!-- SIDEBAR LATERAL -->
     <nav id="sidebar-lateral">
         <a href="dashboard.php">📊 Painel</a>
-        <a href="cadastro.html" class="active-link">📋 Cadastro</a>
+        <a href="cadastro.php" class="active-link">📋 Cadastro</a>
         <a href="ranking.php">🏆 Ranking</a>
-        <a href="index.HTML">🚪 Sair</a>
+        <a href="logout.php">🚪 Sair</a>
         <div class="sidebar-footer">EEEP Manoel Mano © 2026</div>
     </nav>
 
@@ -27,7 +36,7 @@
             <button class="btn-hamburguer" id="btn-hamburguer" aria-label="Menu">
                 <span></span><span></span><span></span>
             </button>
-            <a class="navbar-brand" href="index.HTML">
+            <a class="navbar-brand">
                 <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJgsXhRW5qdtpDbZWZmmPzg9njNJXOGcYLpQ&s" alt="Logo">
                 EEEP Manoel Mano
             </a>
@@ -36,7 +45,7 @@
             <a href="dashboard.php" class="nav-card">
               <span class="nav-card-icon">📊</span><span>Painel</span>
             </a>
-            <a href="cadastro.html" class="nav-card active">
+            <a href="cadastro.php" class="nav-card active">
               <span class="nav-card-icon">📋</span><span>Cadastro</span>
             </a>
             <a href="ranking.php" class="nav-card">
@@ -44,16 +53,11 @@
             </a>
         </nav>
         <div class="navbar-right">
-            <a href="index.HTML" class="btn-sair">Sair</a>
+            <a href="logout.php" class="btn-sair">Sair</a>
         </div>
     </header>
 
-    <script>
-    fetch('get_session.php')
-        .then(r => r.json())
-        .then(data => { if (data.nome) document.getElementById('nome-perfil-nav').textContent = data.nome; })
-        .catch(() => {});
-    </script>
+</script>
 
     <main class="registration-container">
         <h1>📋 Cadastro de Estudante</h1>

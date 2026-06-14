@@ -1,5 +1,12 @@
 <?php
 session_start();
+
+// ── Guard de sessão: redireciona para login se não autenticado ──
+if (!isset($_SESSION['usuario_id'])) {
+    header("Location: index.HTML?erro=acesso_negado");
+    exit();
+}
+
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
@@ -276,11 +283,11 @@ body { background:var(--bg); font-family:'Outfit',sans-serif; color:var(--text);
 <div id="overlay-menu"></div>
 <nav id="sidebar-lateral">
   <a href="dashboard.php" class="active-link">📊 Dashboard</a>
-  <a href="cadastro.html">📋 Cadastro</a>
+  <a href="cadastro.php">📋 Cadastro</a>
   <a href="ranking.php">🏆 Ranking</a>
   <a href="disparar_resultado.php">📲 WhatsApp</a>
-  <a href="index.HTML">🚪 Sair</a>
-  <div class="sidebar-footer">EEEP Manoel Mano © 2026</div>
+  <a href="logout.php">🚪 Sair</a>
+  <div class="sidebar-footer">EEEP Manoel Mano © 2027</div>
 </nav>
 
 <nav class="navbar">
@@ -288,7 +295,7 @@ body { background:var(--bg); font-family:'Outfit',sans-serif; color:var(--text);
     <button class="btn-hamburguer" id="btn-hamburguer" aria-label="Menu">
       <span></span><span></span><span></span>
     </button>
-    <a class="navbar-brand" href="index.HTML">
+    <a class="navbar-brand">
       <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJgsXhRW5qdtpDbZWZmmPzg9njNJXOGcYLpQ&s" alt="Logo">
       EEEP Manoel Mano
     </a>
@@ -297,7 +304,7 @@ body { background:var(--bg); font-family:'Outfit',sans-serif; color:var(--text);
     <a href="dashboard.php" class="nav-card active">
       <span class="nav-card-icon">📊</span><span>Painel</span>
     </a>
-    <a href="cadastro.html" class="nav-card">
+    <a href="cadastro.php" class="nav-card">
       <span class="nav-card-icon">📋</span><span>Cadastro</span>
     </a>
     <a href="ranking.php" class="nav-card">
@@ -308,7 +315,7 @@ body { background:var(--bg); font-family:'Outfit',sans-serif; color:var(--text);
     </a>
   </div>
   <div class="navbar-right">
-    <a href="index.HTML" class="btn-sair">Sair</a>
+    <a href="logout.php" class="btn-sair">Sair</a>
   </div>
 </nav>
 

@@ -8,56 +8,6 @@
 </head>
 <body>
 
-    <!-- OVERLAY -->
-    <div id="overlay-menu"></div>
-
-    <!-- SIDEBAR -->
-    <nav id="sidebar-lateral">
-        <a href="dashboard.php">📊 Painel</a>
-        <a href="cadastro.html">📋 Cadastro</a>
-        <a href="ranking.php">🏆 Ranking</a>
-        <a href="index.HTML">🚪 Sair</a>
-        <div class="sidebar-footer">EEEP Manoel Mano © 2026</div>
-    </nav>
-
-    <header class="navbar">
-        <div class="navbar-left">
-            <button class="btn-hamburguer" id="btn-hamburguer" aria-label="Menu">
-                <span></span><span></span><span></span>
-            </button>
-            <a class="navbar-brand" href="index.HTML">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJgsXhRW5qdtpDbZWZmmPzg9njNJXOGcYLpQ&s" alt="Logo">
-                EEEP Manoel Mano
-            </a>
-        </div>
-        <nav class="navbar-cards">
-            <a href="dashboard.php" class="nav-card">
-              <span class="nav-card-icon">📊</span><span>Painel</span>
-            </a>
-            <a href="cadastro.html" class="nav-card">
-              <span class="nav-card-icon">📋</span><span>Cadastro</span>
-            </a>
-            <a href="ranking.php" class="nav-card">
-              <span class="nav-card-icon">🏆</span><span>Ranking</span>
-            </a>
-        </nav>
-        <div class="navbar-right">
-            <a href="index.HTML" class="btn-sair">← Voltar ao Login</a>
-        </div>
-    </header>
-
-    <script>
-    (function(){
-        const btn = document.getElementById('btn-hamburguer');
-        const sidebar = document.getElementById('sidebar-lateral');
-        const overlay = document.getElementById('overlay-menu');
-        if (!btn) return;
-        function fechar(){ btn.classList.remove('aberto'); sidebar.classList.remove('aberta'); overlay.classList.remove('aberto'); }
-        btn.addEventListener('click', () => sidebar.classList.contains('aberta') ? fechar() : (btn.classList.add('aberto'), sidebar.classList.add('aberta'), overlay.classList.add('aberto')));
-        overlay.addEventListener('click', fechar);
-    })();
-    </script>
-
     <div class="static-page-container">
         <h1>Termos de Serviço</h1>
         <p class="update-date"><strong>Última atualização:</strong> 07/04/2026</p>
