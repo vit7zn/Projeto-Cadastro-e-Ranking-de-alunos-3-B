@@ -54,7 +54,7 @@ $cursoLabel = $cursos[$curso] ?? strtoupper($curso);
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Resultado Preliminar – EEEP Manoel Mano</title>
+<title>Resultado Preliminar – SIPS</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
@@ -275,8 +275,9 @@ body {
     <a href="dashboard.php">📊 Painel</a>
     <a href="cadastro.php">📋 Cadastro</a>
     <a href="ranking.php" class="active-link">🏆 Ranking</a>
+    <a href="disparar_resultado.php">📲 WhatsApp</a>
     <a href="logout.php">🚪 Sair</a>
-    <div class="sidebar-footer">EEEP Manoel Mano © 2027</div>
+    <div class="sidebar-footer">SIPS © 2027</div>
 </nav>
 
 <header class="navbar">
@@ -285,8 +286,8 @@ body {
             <span></span><span></span><span></span>
         </button>
         <a class="navbar-brand" >
-            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJgsXhRW5qdtpDbZWZmmPzg9njNJXOGcYLpQ&s" alt="Logo">
-            EEEP Manoel Mano
+            <img src="logo_sips.svg" alt="Logo">
+            SIPS
         </a>
     </div>
     <div class="navbar-cards">
@@ -298,6 +299,9 @@ body {
       </a>
       <a href="ranking.php" class="nav-card active">
         <span class="nav-card-icon">🏆</span><span>Ranking</span>
+      </a>
+      <a href="disparar_resultado.php" class="nav-card" style="background:rgba(37,211,102,.1);border-color:rgba(37,211,102,.22);color:rgba(37,211,102,.85);">
+        <span class="nav-card-icon">📲</span><span>WhatsApp</span>
       </a>
     </div>
     <div class="navbar-right">
@@ -328,14 +332,14 @@ body {
     <!-- Cabeçalho idêntico ao PDF -->
     <div class="doc-header">
         <div class="doc-header-logo">
-            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJgsXhRW5qdtpDbZWZmmPzg9njNJXOGcYLpQ&s" alt="Logo">
+            <img src="logo_sips.svg" alt="Logo">
         </div>
         <div class="doc-header-text">
-            <div class="line1">Processo Seletivo – EEEP Manoel Mano 2027</div>
+            <div class="line1">Processo Seletivo – SIPS 2027</div>
             <div class="line2">RESULTADO PRELIMINAR – <?= htmlspecialchars($cursoLabel) ?></div>
         </div>
         <div class="doc-header-right">
-            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJgsXhRW5qdtpDbZWZmmPzg9njNJXOGcYLpQ&s" alt="ADESÕES">
+            <img src="logo_sips.svg" alt="ADESÕES">
         </div>
     </div>
 
@@ -483,7 +487,7 @@ body {
         <p>Assim, candidatos inscritos em modalidades afirmativas territoriais não ficam restritos apenas à lista da reserva, devendo também figurar na ampla concorrência, preservando-se: <em>o princípio da isonomia; a ordem geral de classificação; e a competitividade entre todos os estudantes.</em></p>
     </div>
 
-    <div class="doc-footer">EEEP Manoel Mano — Crateús &nbsp;|&nbsp; <?= date('d/m/Y') ?></div>
+    <div class="doc-footer">SIPS — Crateús &nbsp;|&nbsp; <?= date('d/m/Y') ?></div>
 
 </div><!-- /folha -->
 

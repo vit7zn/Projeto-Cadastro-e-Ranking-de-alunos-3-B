@@ -37,7 +37,7 @@ $totalReprovados = q($conn, "SELECT COUNT(*) c FROM alunos " . ($wClause ? "$wCl
 
 // Maior e menor média
 $maiorMedia = q($conn, "SELECT MAX(media_geral) m FROM alunos $wClause")?->fetch_assoc()['m'] ?? 0;
-$menorMedia = q($conn, "SELECT MIN(media_geral) m FROM alunos $wClause WHERE media_geral IS NOT NULL")?->fetch_assoc()['m'] ?? 0;
+$menorMedia = q($conn, "SELECT MIN(media_geral) m FROM alunos " . ($wClause ? "$wClause AND" : "WHERE") . " media_geral IS NOT NULL")?->fetch_assoc()['m'] ?? 0;
 
 // Procedência
 $procData = ['Pública'=>0,'Privada'=>0];
@@ -84,7 +84,7 @@ if ($r) while ($row = $r->fetch_assoc()) $topAlunos[] = $row;
 $faixasMedia = [
     '9–10' => 0, '8–9' => 0, '7–8' => 0, '6–7' => 0, 'Abaixo de 6' => 0
 ];
-$r = q($conn, "SELECT media_geral FROM alunos $wClause WHERE media_geral IS NOT NULL");
+$r = q($conn, "SELECT media_geral FROM alunos " . ($wClause ? "$wClause AND" : "WHERE") . " media_geral IS NOT NULL");
 if ($r) while ($row = $r->fetch_assoc()) {
     $m = (float)$row['media_geral'];
     if ($m >= 9)      $faixasMedia['9–10']++;
@@ -145,7 +145,7 @@ if (isset($_GET['ajax'])) {
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard — EEEP Manoel Mano</title>
+<title>Dashboard — SIPS</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
@@ -380,6 +380,7 @@ body {
   opacity:.05;
 }
 .kpi-card:hover { transform:translateY(-3px); box-shadow:var(--shadow-lg); }
+.kpi-card.green  { border-top-color:var(--green-main); }
 .kpi-card.orange { border-top-color:var(--orange); }
 .kpi-card.teal   { border-top-color:var(--teal); }
 .kpi-card.violet { border-top-color:var(--violet); }
@@ -872,7 +873,7 @@ body {
   <a href="ranking.php">🏆 Ranking</a>
   <a href="disparar_resultado.php">📲 WhatsApp</a>
   <a href="logout.php">🚪 Sair</a>
-  <div class="sidebar-footer">EEEP Manoel Mano © 2027</div>
+  <div class="sidebar-footer">SIPS © 2025</div>
 </nav>
 
 <nav class="navbar">
@@ -881,8 +882,8 @@ body {
       <span></span><span></span><span></span>
     </button>
     <a class="navbar-brand">
-      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJgsXhRW5qdtpDbZWZmmPzg9njNJXOGcYLpQ&s" alt="Logo">
-      EEEP Manoel Mano
+      <img src="logo_sips.svg" alt="Logo">
+      SIPS
     </a>
   </div>
   <div class="navbar-cards">
@@ -1155,7 +1156,7 @@ body {
       <div style="margin-top:18px; border-top:1.5px solid var(--border); padding-top:14px">
         <div style="font-size:.73rem;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);margin-bottom:10px">Top Cursos</div>
         <table class="curso-table" id="curso-mini-table">
-          <?php $rank=0; foreach (array_slice($cursoData,0,5,true) as $nome=>$qtd):
+          <?php foreach (array_slice($cursoData,0,5,true) as $nome=>$qtd):
             $max = max($cursoData);
             $pct = $max > 0 ? round(($qtd/$max)*100) : 0;
           ?>
@@ -1455,8 +1456,25 @@ function updateChart(chart, labels, data, colorFn) {
   if (!chart) return;
   chart.data.labels = labels;
   chart.data.datasets[0].data = data;
-  if (colorFn) chart.data.datasets[0].backgroundColor = colorFn(data);
-  chart.update('active');
+  if (colorFn) {
+    chart.data.datasets[0].backgroundColor = colorFn(data);
+  }
+  chart.update();
+}
+
+function updateDoughnut(chart, labels, data) {
+  if (!chart) return;
+  chart.data.labels = labels;
+  chart.data.datasets[0].data = data;
+  chart.update();
+}
+
+function updateBarWithPalette(chart, labels, data, colors) {
+  if (!chart) return;
+  chart.data.labels = labels;
+  chart.data.datasets[0].data = data;
+  chart.data.datasets[0].backgroundColor = colors || PALETTE;
+  chart.update();
 }
 
 function setEl(id, val) {
@@ -1544,9 +1562,11 @@ async function aplicarFiltros() {
   setLoading(true);
   try {
     const url = `dashboard.php?ajax=1&curso=${encodeURIComponent(curso)}&sexo=${encodeURIComponent(sexo)}&proc=${encodeURIComponent(proc)}`;
-    const d = await (await fetch(url)).json();
+    const resp = await fetch(url);
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+    const d = await resp.json();
 
-    // KPI cards
+    // ── KPI cards principais ──
     setEl('v-total',      d.totalCadastros);
     setEl('v-media',      d.mediaGeral);
     setEl('v-pcd',        d.totalPCD);
@@ -1559,34 +1579,72 @@ async function aplicarFiltros() {
     setEl('v-taxa-ap',    d.taxaAprovacao + '% aprovação');
     setEl('v-taxa-pcd',   d.taxaPCD + '% do total');
 
-    // Procedência legenda
+    // ── Procedência: legenda do donut + texto de meta ──
     setEl('leg-pub',  d.pubTotal);
     setEl('leg-priv', d.privTotal);
     setEl('v-pub',    'Pública: ' + d.pubTotal);
     setEl('v-priv',   'Privada: ' + d.privTotal);
 
-    // Barras de progresso
-    setWidth('bar-ap',   d.taxaAprovacao);
-    setWidth('bar-pcd',  d.taxaPCD);
+    // ── Indicadores: barras de progresso + percentuais + textos de meta ──
+    setWidth('bar-ap',  d.taxaAprovacao);
+    setEl('ind-ap-v',   d.taxaAprovacao + '%');
+    // texto "X / Y" da taxa de aprovação
+    const elApFrac = document.querySelector('#bar-ap')?.closest('.indicator-card')?.querySelector('.progress-label span:last-child');
+    if (elApFrac) elApFrac.textContent = d.totalAprovados + ' / ' + d.totalCadastros;
+    // meta: reprovados
+    const elApMeta = document.querySelector('#bar-ap')?.closest('.indicator-card')?.querySelector('.progress-meta span:last-child');
+    if (elApMeta) elApMeta.textContent = d.totalReprovados + ' reprovados';
 
-    const totalD = (d.pubTotal||0) + (d.privTotal||0);
-    const pctPubD = totalD > 0 ? Math.round((d.pubTotal/totalD)*100) : 0;
+    const totalD   = (d.pubTotal||0) + (d.privTotal||0);
+    const pctPubD  = totalD > 0 ? Math.round((d.pubTotal / totalD) * 100) : 0;
     setWidth('bar-pub', pctPubD);
-    setEl('ind-pub-v', pctPubD + '% pública');
-    setEl('ind-ap-v', d.taxaAprovacao + '%');
-    setEl('ind-pcd-v', d.taxaPCD + '%');
+    setEl('ind-pub-v',  pctPubD + '% pública');
+    // texto "X / Y" da procedência
+    const elPubFrac = document.querySelector('#bar-pub')?.closest('.indicator-card')?.querySelector('.progress-label span:last-child');
+    if (elPubFrac) elPubFrac.textContent = d.pubTotal + ' / ' + d.privTotal;
 
-    const totGenD = d.generoValues.reduce((a,b)=>a+b,0);
-    const pctMascD = totGenD > 0 ? Math.round((d.generoValues[0]/totGenD)*100) : 0;
+    setWidth('bar-pcd', d.taxaPCD);
+    setEl('ind-pcd-v',  d.taxaPCD + '%');
+    // texto de quantidade PCD
+    const elPcdFrac = document.querySelector('#bar-pcd')?.closest('.indicator-card')?.querySelector('.progress-label span:last-child');
+    if (elPcdFrac) elPcdFrac.textContent = d.totalPCD + ' alunos';
+
+    const totGenD  = d.generoValues.reduce((a,b)=>a+b,0);
+    const mascVal  = d.generoValues[0] || 0;
+    const femVal   = d.generoValues[1] || 0;
+    const pctMascD = totGenD > 0 ? Math.round((mascVal / totGenD) * 100) : 0;
     setWidth('bar-masc', pctMascD);
-    setEl('ind-masc-v', pctMascD + '% masc.');
+    setEl('ind-masc-v',  pctMascD + '% masc.');
+    // texto "X / Y" do gênero
+    const elGenFrac = document.querySelector('#bar-masc')?.closest('.indicator-card')?.querySelector('.progress-label span:last-child');
+    if (elGenFrac) elGenFrac.textContent = mascVal + ' / ' + femVal;
+    // meta masc/fem
+    const elGenMeta = document.querySelector('#bar-masc')?.closest('.indicator-card')?.querySelector('.progress-meta');
+    if (elGenMeta) elGenMeta.innerHTML = `<span>Masc: ${mascVal}</span><span>Fem: ${femVal}</span>`;
 
-    // Gráficos
-    updateChart(charts.curso,   d.cursoLabels,    d.cursoValues);
-    updateChart(charts.proc,    d.procLabels,     d.procValues);
-    updateChart(charts.genero,  d.generoLabels,   d.generoValues);
-    updateChart(charts.ranking, d.rankLabels,     d.rankValues);
-    updateChart(charts.media,   d.mediaCursoLbls, d.mediaCursoVals,
+    // ── Mini-table top cursos ──
+    const miniTable = document.getElementById('curso-mini-table');
+    if (miniTable && d.cursoLabels.length) {
+      const maxQtd = Math.max(...d.cursoValues) || 1;
+      const top5   = d.cursoLabels.slice(0, 5);
+      miniTable.innerHTML = top5.map((nome, i) => {
+        const qtd = d.cursoValues[i] || 0;
+        const pct = Math.round((qtd / maxQtd) * 100);
+        return `<tr>
+          <td>${nome}</td>
+          <td><div class="curso-bar"><div class="curso-bar-fill" style="width:${pct}%"></div></div></td>
+          <td>${qtd}</td>
+        </tr>`;
+      }).join('');
+    }
+
+    // ── Gráficos ──
+    updateBarWithPalette(charts.curso,   d.cursoLabels,    d.cursoValues, PALETTE);
+    updateDoughnut(charts.proc,          d.procLabels,     d.procValues);
+    updateBarWithPalette(charts.genero,  d.generoLabels,   d.generoValues,
+      [COLORS.blue, COLORS.pink, COLORS.teal]);
+    updateBarWithPalette(charts.ranking, d.rankLabels,     d.rankValues, PALETTE);
+    updateChart(charts.media, d.mediaCursoLbls, d.mediaCursoVals,
       vals => vals.map(v => v>=7 ? COLORS.green+'cc' : v>=6 ? COLORS.yellow+'cc' : COLORS.red+'cc'));
 
     renderFaixas(d.faixasLabels, d.faixasValues);
@@ -1597,6 +1655,7 @@ async function aplicarFiltros() {
 
   } catch(e) {
     console.error('Erro ao filtrar:', e);
+    alert('Erro ao aplicar filtros. Verifique o console.');
   } finally {
     setLoading(false);
   }
@@ -1629,22 +1688,35 @@ function exportarCSV() {
 }
 
 /* ══════════════════════════════════════
-   EVENTOS
+   EVENTOS — registrados com DOMContentLoaded
+   para garantir que rodam após qualquer script externo
 ══════════════════════════════════════ */
-let debounce;
-['f-curso','f-sexo','f-proc'].forEach(id => {
-  document.getElementById(id)?.addEventListener('change', () => {
-    clearTimeout(debounce);
-    debounce = setTimeout(aplicarFiltros, 200);
+(function registrarEventos() {
+  let debounce;
+  ['f-curso','f-sexo','f-proc'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    // remove listeners antigos clonando o elemento
+    const clone = el.cloneNode(true);
+    el.parentNode.replaceChild(clone, el);
+    clone.addEventListener('change', () => {
+      clearTimeout(debounce);
+      debounce = setTimeout(aplicarFiltros, 250);
+    });
   });
-});
 
-document.getElementById('btn-reset-filtros')?.addEventListener('click', () => {
-  document.getElementById('f-curso').value = 'todos';
-  document.getElementById('f-sexo').value  = 'todos';
-  document.getElementById('f-proc').value  = 'todos';
-  aplicarFiltros();
-});
+  const btnReset = document.getElementById('btn-reset-filtros');
+  if (btnReset) {
+    const clone = btnReset.cloneNode(true);
+    btnReset.parentNode.replaceChild(clone, btnReset);
+    clone.addEventListener('click', () => {
+      document.getElementById('f-curso').value = 'todos';
+      document.getElementById('f-sexo').value  = 'todos';
+      document.getElementById('f-proc').value  = 'todos';
+      aplicarFiltros();
+    });
+  }
+})();
 </script>
 </body>
 </html>

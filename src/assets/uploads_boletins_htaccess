@@ -1,0 +1,12 @@
+# ══════════════════════════════════════════════════════════════
+#  Protege a pasta uploads/boletins/
+#  - Impede listagem de diretório
+#  - Impede execução de PHP (mesmo que alguém envie um .php disfarçado)
+#  - Os arquivos só são servidos via boletins_api.php?acao=get
+# ══════════════════════════════════════════════════════════════
+
+Options -Indexes
+
+<FilesMatch "\.(php|phtml|php3|php4|php5|pht)$">
+    Require all denied
+</FilesMatch>

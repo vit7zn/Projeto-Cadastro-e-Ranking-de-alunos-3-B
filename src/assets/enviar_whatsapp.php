@@ -1,15 +1,15 @@
 <?php
 // ══════════════════════════════════════════════════════════════════
 //  enviar_whatsapp.php — Envio via Ultramsg
-//  EEEP Manoel Mano
+//  SIPS
 // ══════════════════════════════════════════════════════════════════
 
 // ──────────────────────────────────────────
 //  ⚙️  CONFIGURAÇÕES — edite aqui
 // ──────────────────────────────────────────
-define('ULTRAMSG_INSTANCE', 'instance174201');  // ex: instance12345
-define('ULTRAMSG_TOKEN',    'g950xsqrr7s4ualp');       // token do painel Ultramsg
-define('ESCOLA_NOME',       'EEEP Manoel Mano');
+define('ULTRAMSG_INSTANCE', 'instance181054');  // ex: instance12345
+define('ULTRAMSG_TOKEN',    'qrhqeibd16ka466e');       // token do painel Ultramsg
+define('ESCOLA_NOME',       'SIPS');
 
 // Inclui gerador de PDF do ranking
 require_once __DIR__ . '/gerar_pdf_ranking.php';

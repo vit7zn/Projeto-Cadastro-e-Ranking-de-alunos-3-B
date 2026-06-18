@@ -1,10 +1,4 @@
 <?php
-// ══════════════════════════════════════════════════════════════════
-//  disparar_resultado.php — Painel de disparo manual via WhatsApp
-//  Acesso restrito: apenas administradores logados
-//  EEEP Manoel Mano
-// ══════════════════════════════════════════════════════════════════
-
 session_start();
 
 // ── Guard de sessão: redireciona para login se não autenticado ──
@@ -98,7 +92,7 @@ if ($rc) while ($r = $rc->fetch_assoc()) $cursos[] = $r['curso'];
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Disparar Resultado WhatsApp — EEEP Manoel Mano</title>
+    <title>Disparar Resultado WhatsApp — SIPS</title>
     <link rel="stylesheet" href="style.css">
     <style>
         .disparo-card {
@@ -253,7 +247,7 @@ if ($rc) while ($r = $rc->fetch_assoc()) $cursos[] = $r['curso'];
     <a href="ranking.php">🏆 Ranking</a>
     <a href="disparar_resultado.php" class="active-link">📲 WhatsApp</a>
     <a href="logout.php">🚪 Sair</a>
-    <div class="sidebar-footer">EEEP Manoel Mano © 2026</div>
+    <div class="sidebar-footer">SIPS © 2026</div>
 </nav>
 
 <header class="navbar">
@@ -262,8 +256,8 @@ if ($rc) while ($r = $rc->fetch_assoc()) $cursos[] = $r['curso'];
             <span></span><span></span><span></span>
         </button>
         <a class="navbar-brand" href="index.HTML">
-            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJgsXhRW5qdtpDbZWZmmPzg9njNJXOGcYLpQ&s" alt="Logo">
-            EEEP Manoel Mano
+            <img src="logo_sips.svg" alt="Logo">
+            SIPS
         </a>
     </div>
     <nav class="navbar-cards">
